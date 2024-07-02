@@ -40,6 +40,9 @@ typedef struct year {
   size_t top[3];
 } tYear;
 
+
+
+
 ticketsADT newTickets(size_t beginYear, size_t endYear);
 
 int insertInfraction(tInfraction infraction, ticketsADT tickets);
