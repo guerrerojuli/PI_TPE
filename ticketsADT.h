@@ -18,12 +18,10 @@ typedef struct infraction {
   char *description;
 } tInfraction;
 
-struct infractionAmountNode {
+typedef struct infractionByAmount {
   char *description;
   size_t amount;
-  struct infractionAmountNode *next;
-};
-typedef struct infractionAmountNode *infractionAmountList;
+} tInfractionByAmount;
 
 typedef struct agency {
   char *name;
@@ -31,13 +29,11 @@ typedef struct agency {
   size_t amount;
 } tAgency;
 
-struct infractionPlateNode {
+typedef struct infractionPlateByAlpha {
   char *description;
   char *plate;
   size_t amount;
-  struct infractionPlateNode *next;
-};
-typedef struct infractionPlateNode *infractionPlateList;
+} tInfractionPlateByAlpha;
 
 typedef struct year {
   size_t year;
@@ -50,11 +46,23 @@ int insertInfraction(tInfraction infraction, ticketsADT tickets);
 
 int insertTicket(tTicket ticket, ticketsADT tickets);
 
-infractionAmountList getInfractionsByAmount(ticketsADT tickets);
+void toBeginByAmount(ticketsADT tickets);
 
-tAgency *popularInfractionByAgency(ticketsADT tickets);
+int hasNextByAmount(ticketsADT tickets);
 
-infractionPlateList getInfractionPlate(ticketsADT tickets);
+tInfraction nextByAmount(ticketsADT tickets);
+
+void toBeginAgeny(ticketsADT tickets);
+
+int hasNextAgency(ticketsADT tickets);
+
+tAgency nextAgency(ticketsADT tickets);
+
+void toBeginPlateByAlpha(ticketsADT tickets);
+
+int hasNextPlateByAlpha(ticketsADT tickets);
+
+tInfractionPlateByAlpha nextPlateByAlpha(ticketsADT tickets);
 
 tYear *getTop3Month(ticketsADT tickets);
 
