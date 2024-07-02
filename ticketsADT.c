@@ -57,6 +57,11 @@ ticketsADT newTickets(size_t beginYear, size_t endYear) {
     return NULL;
   }
 
+  for (int i=0 ; i <= (endYear - beginYear) ; i++){
+    for (int j=0 ; j<N_MONTH ; j++){
+      tickets->years[i][j]=0;
+    }
+  }
   tickets->beginYear = beginYear;
   tickets->endYear = endYear;
   return tickets;
