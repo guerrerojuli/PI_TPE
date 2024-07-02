@@ -1,7 +1,7 @@
 #ifndef __ticketsADT__h
 #define __ticketsADT__h
 
-typedef unsigned int size_t;
+#include <stdlib.h>
 
 typedef struct ticketsCDT *ticketsADT;
 
