@@ -1,3 +1,7 @@
+#ifndef __ticketsADT__h
+#define __ticketsADT__h
+
+#include <stdlib.h>
 #define LONG_PATENTE 10
 
 typedef struct {
@@ -19,12 +23,10 @@ typedef struct infraction {
   char *description;
 } tInfraction;
 
-struct infractionAmountNode {
+typedef struct infractionByAmount {
   char *description;
   size_t amount;
-  struct infractionAmountNode *next;
-};
-typedef struct infractionAmountNode *infractionAmountList;
+} tInfractionByAmount;
 
 typedef struct agency {
   char *name;
@@ -32,13 +34,11 @@ typedef struct agency {
   size_t amount;
 } tAgency;
 
-struct infractionPlateNode {
+typedef struct infractionPlateByAlpha {
   char *description;
   char *plate;
   size_t amount;
-  struct infractionPlateNode *next;
-};
-typedef struct infractionPlateNode *infractionPlateList;
+} tInfractionPlateByAlpha;
 
 typedef struct year {
   size_t year;
@@ -47,16 +47,39 @@ typedef struct year {
 
 ticketsADT newTickets(size_t beginYear, size_t endYear, size_t max_description, size_t max_agency_name);
 
-int insertInfraction(tInfraction infraction, ticketsADT tickets, size_t max_size); // Será 35 si es de NYC, 50 si es de CHI
+/* Vincula el id con la descripcion de la infraccion. 
+** Retorna 0 si el id ya estaba vinculado a una descripcion (no lo inserta).
+** Retorna 0 si falla la asignacion de memoria.
+** Retorna 1 si lo puedo vincular (lo inserta).
+*/
+int insertInfraction(tInfraction infraction, ticketsADT tickets);
 
+/* Inserta un ticket. 
+** Retorna 0 si el id de la infraccion no existe y no lo inserta.
+** Retorna 1 si lo pudo insertar.
+*/
 int insertTicket(tTicket ticket, ticketsADT tickets);
 
-infractionAmountList getInfractionsByAmount(ticketsADT tickets);
+void toBeginByAmount(ticketsADT tickets);
 
-tAgency *popularInfractionByAgency(ticketsADT tickets);
+int hasNextByAmount(ticketsADT tickets);
 
-infractionPlateList getInfractionPlate(ticketsADT tickets);
+tInfractionByAmount nextByAmount(ticketsADT tickets);
+
+void toBeginByAgency(ticketsADT tickets);
+
+int hasNextAgency(ticketsADT tickets);
+
+tAgency nextByAgency(ticketsADT tickets);
+
+void toBeginPlateByAlpha(ticketsADT tickets);
+
+int hasNextPlateByAlpha(ticketsADT tickets);
+
+tInfractionPlateByAlpha nextPlateByAlpha(ticketsADT tickets);
 
 tYear *getTop3Month(ticketsADT tickets);
 
 void freeTickets(ticketsADT tickets);
+
+#endif
