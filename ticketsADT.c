@@ -35,6 +35,7 @@ struct ticketsCDT {
   size_t beginYear;
   size_t endYear;
   size_t infractionsDim;
+  size_t longDescr;
   tInfractionNode *infractions; // Vector de infracciones ordenados por id;
   tInfractionNode *firstByAmount;
   tInfractionNode *currentByAmount;
@@ -46,17 +47,15 @@ struct ticketsCDT {
 
 
 
-ticketsADT newTickets(size_t beginYear, size_t endYear) {
+ticketsADT newTickets(size_t beginYear, size_t endYear, size_t longDescr) {
   errno = 0;
-  if (beginYear > endYear) {
-    return NULL;
-  }
 
   ticketsADT tickets = calloc(1, sizeof(*tickets));
   if (tickets==NULL || errno == ENOMEM) {
     return NULL;
   }
 
+  tickets->years=realloc(tickets->years, (endYear - beginYear + 1) * sizeof(tickets->years[0]));
   for (int i=0 ; i <= (endYear - beginYear) ; i++){
     for (int j=0 ; j<N_MONTH ; j++){
       tickets->years[i][j]=0;
@@ -64,10 +63,20 @@ ticketsADT newTickets(size_t beginYear, size_t endYear) {
   }
   tickets->beginYear = beginYear;
   tickets->endYear = endYear;
+  tickets->longDescr=longDescr;
   return tickets;
 }
 
-
+static char *
+copyDescription(char * description, size_t longDescription){
+  errno=0;
+  char * newDescription=malloc(longDescription);
+  if (newDescription == NULL || errno == ENOMEM){
+    exit(1); //CHEQUEAR ESTO
+  }
+  strcpy(newDescription, description);
+  return newDescription;
+}
 
 int insertInfraction(tInfraction infraction, ticketsADT tickets){
 
@@ -89,7 +98,7 @@ int insertInfraction(tInfraction infraction, ticketsADT tickets){
 
   /*Si el id ya tiene vinculado una descripcion retorno 0*/
   if (tickets->infractions[infraction.id].description != NULL){
-    return 0; 
+    return 0;
   }
 
   /*como ya se que el id no tiene vinculado una descripcion, agrego la descripcion y seteo todo en NUll o 0, retorno 1*/
