@@ -1,3 +1,6 @@
+#ifndef __ticketsADT__h
+#define __ticketsADT__h
+
 typedef unsigned int size_t;
 
 typedef struct ticketsCDT *ticketsADT;
@@ -56,3 +59,5 @@ infractionPlateList getInfractionPlate(ticketsADT tickets);
 tYear *getTop3Month(ticketsADT tickets);
 
 void freeTickets(ticketsADT tickets);
+
+#endif
