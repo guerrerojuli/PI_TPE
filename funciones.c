@@ -2,7 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
-#include "./ticketsADT.h"
+#include "ticketsADT.h"
+#define MAX_MONTHS 12 // podrian utilizarse los 6 primeros
 #define MAX_LINE_LENGTH 256
 
 // Archivo en el cual guardamos las funciones auxiliares utilizadas en el main de CHICAGO y NYC análogamente
@@ -99,5 +100,13 @@ void query4(ticketsADT tickets) {
         // Salida por error
     }
     fprintf(query4, "year;ticketsTop1Month;ticketsTop2Month;ticketsTop3Month\n");
-    // NO ESTÁ TERMINADA
+    int dim = getYears(tickets);
+    tYear *resp = getTop3Month(tickets);
+    static char *months[MAX_MONTHS] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+    for (int i = 0; i < dim; i++)
+    {
+        fprintf(query4, "%d;%s;%s;%s\n", resp[i].year, months[resp[i].top[0]], months[resp[i].top[1]], months[resp[i].top[2]]);
+    }
+    fclose(query4);
+    free(resp);
 }
