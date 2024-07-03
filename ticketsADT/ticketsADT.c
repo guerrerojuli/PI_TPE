@@ -62,4 +62,3 @@ int insertInfraction(tInfraction infraction, ticketsADT tickets) {
   }
   return 1;
 }
-
