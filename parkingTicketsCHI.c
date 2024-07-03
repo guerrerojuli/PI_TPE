@@ -4,6 +4,8 @@
 #include <time.h>
 #include "./ticketsADT.h"
 #include "./funciones.c"
+#define TICKETS_FIELDS 4
+#define MAX_LONG_INT 11 // Maxima longitud de un int y el cero final
 #define MAX_INFRACTION_CHI 50
 #define MAX_AGENCY_CHI 13
 #define MAX_LINE_LENGTH 256 // Preguntar si es necesario que sea exactamente id + ; + name
@@ -54,3 +56,25 @@ void loadTicketsCHI(ticketsADT ticketsCHI, FILE *file_tickets, char* delimiters,
         insertTicket(ticket_aux, ticketsCHI);
     }
 }
+
+// Implementacion con fscanf
+void loadTicketsCHI_2(ticketsADT ticketsCHI, FILE *file_tickets) {
+    char id_aux[MAX_LONG_INT];
+    char year_aux[MAX_LONG_INT];
+    char month_aux[MAX_LONG_INT];
+    char agency_aux[MAX_AGENCY_CHI];
+    tTicket ticket_aux;
+    fscanf(file_tickets, "%*[^\n]\n"); // Sacamos los nombre de los campos de la primer línea
+    while ( fscanf(file_tickets, "%[^-]-%[^-]-%*[^;];%[^;];%[^;];%[^;];%*[^\n]\n", year_aux, month_aux, ticket_aux.patente, agency_aux, id_aux) == TICKETS_FIELDS ) {
+        ticket_aux.id = atoi(id_aux);
+        ticket_aux.year = atoi(year_aux);
+        ticket_aux.month = (char)atoi(month_aux);
+        ticket_aux.agency = agency_aux;
+        insertTicket(ticket_aux, ticketsCHI);
+    }
+}
+
+// issueDate;plateRedacted;unitDescription;infractionCode;fineLevel1Amount
+// 2002-05-01 12:53:00;2863508112;DOF;26;50
+// 2000-12-13 21:55:00;3994f46984;CPD;59;50
+// 2000-12-13 22:20:00;ce499a99eb;CPD;49;50
