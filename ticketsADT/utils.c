@@ -3,7 +3,7 @@
 #include <errno.h>
 #include <string.h>
 
-char *copyString(const char *string, size_t strLength) {
+char *copyOfStr(const char *string, size_t strLength) {
   errno = 0;
   char *newName = malloc(strLength + 1);
   if (newName == NULL || errno == ENOMEM) {

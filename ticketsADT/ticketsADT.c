@@ -50,7 +50,7 @@ int insertInfraction(tInfraction infraction, ticketsADT tickets) {
   /*como ya se que el id no tiene vinculado una descripcion, agrego la
    * descripcion y seteo todo en NUll o 0, retorno 1*/
   tInfractionNode *ticket = &tickets->infractions[infraction.id];
-  ticket->description = copyString(infraction.description, tickets->descLength);
+  ticket->description = copyOfStr(infraction.description, tickets->descLength);
   if (ticket->description == NULL) {
     return -1;
   }

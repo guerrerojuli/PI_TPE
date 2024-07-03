@@ -6,6 +6,6 @@
 /* Retorna una copia de un string
  * Retorna NULL si falla
  */
-char *copyString(const char *string, size_t strLength);
+char *copyOfStr(const char *string, size_t strLength);
 
 #endif

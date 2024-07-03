@@ -17,8 +17,7 @@ int insertTicket(tTicket ticket, ticketsADT tickets) {
   }
 
   errno = 0;
-  tickets->agencies =
-      addTicketToAgency(tickets->agencies, ticket.agency, ticket.id, tickets->infractionsDim, tickets->agencyLength);
+  tickets->agencies =addTicketToAgency(tickets->agencies, ticket.agency, ticket.id, tickets->infractionsDim, tickets->agencyLength);
   if (errno == ENOMEM) {
     return -1;
   }
@@ -38,13 +37,14 @@ static tAgencyList addTicketToAgency(tAgencyList agencyNode, char *agency, size_
   int cmp;
 
   if (agencyNode == NULL || (cmp = strcmp(agencyNode->name, agency) > 0)) {
+
     errno = 0;
     tAgencyList newAgency = malloc(sizeof(*newAgency));
     if (newAgency == NULL || errno == ENOMEM) {
       return agencyNode; // Ante un error retorna la misma lista sin hacer cambios
     }
 
-    newAgency->name = copyString(agency, maxLongAgencyName);
+    newAgency->name = copyOfStr(agency, maxLongAgencyName);
     if (newAgency->name == NULL) {
       free(newAgency);
       return agencyNode; // retorna la lista sin hacer cambios
@@ -54,8 +54,10 @@ static tAgencyList addTicketToAgency(tAgencyList agencyNode, char *agency, size_
     newAgency->inf = calloc(infractionsDim, sizeof(*newAgency->inf));
     newAgency->inf[id]++;
     return newAgency;
+
   } else if (cmp < 0) {
     agencyNode->nextAgency = addTicketToAgency( agencyNode->nextAgency, agency, id, infractionsDim, maxLongAgencyName);
+
   } else {
     agencyNode->inf[id]++;
 
@@ -63,6 +65,7 @@ static tAgencyList addTicketToAgency(tAgencyList agencyNode, char *agency, size_
     if (agencyNode->inf[id] > agencyNode->inf[agencyNode->maxId]) {
       agencyNode->maxId = id;
     }
+    
   }
 
   return agencyNode;
