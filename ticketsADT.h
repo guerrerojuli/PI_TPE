@@ -2,7 +2,7 @@
 #define __ticketsADT__h
 
 #include <stddef.h>
-#define LONG_PATENTE 10
+#define LONG_PATENTE 11 // Cuento el 0 final
 
 typedef struct ticketsCDT *ticketsADT;
 
