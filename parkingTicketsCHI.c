@@ -34,6 +34,9 @@ int main(int argc, char *argv[]) {
     query2(ticketsCHI);
     query3(ticketsCHI);
     query4(ticketsCHI);
+
+    freeTickets(ticketsCHI);
+    return 0;
 }
 
 // Especificamente para Chicago (Difiere el orden de los datos en el .csv con NYC)
@@ -42,7 +45,7 @@ void loadTicketsCHI(ticketsADT ticketsCHI, FILE *file_tickets, char* delimiters,
     fgets(buffer_line, MAX_LINE_LENGTH, file_tickets); // Sacamos los nombre de los campos de la primer línea
     while ( fgets(buffer_line, MAX_LINE_LENGTH, file_tickets) != NULL ) {
         ticket_aux.year = atoi(strtok(buffer_line, '-')); // Guardo yyyy
-        ticket_aux.month = atoi(strtok(NULL, '-')); // Guardo MM
+        ticket_aux.month = (char)atoi(strtok(NULL, '-')); // Guardo MM
         strtok(NULL, delimiters); // Acá esta dd HH-mm-SS que no me interesa, no lo guardo
         strcpy(ticket_aux.patente, strtok(NULL, delimiters));
         ticket_aux.agency = strtok(NULL, delimiters);

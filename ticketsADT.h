@@ -1,14 +1,10 @@
 #ifndef __ticketsADT__h
 #define __ticketsADT__h
 
-#include <stdlib.h>
+#include <stddef.h>
 #define LONG_PATENTE 10
 
-typedef struct {
-  int hola;
-} ticketsCDT;
-
-typedef ticketsCDT *ticketsADT;
+typedef struct ticketsCDT *ticketsADT;
 
 typedef struct ticket {
   size_t id;
