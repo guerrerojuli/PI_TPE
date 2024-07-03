@@ -3,62 +3,61 @@
 #include <stdlib.h>
 #include <time.h>
 #include "ticketsADT.h"
-#define MAX_LINE_LENGTH 256 // Preguntar si es necesario que sea exactamente la longitud de la fila de tickets
+#include "funciones.c"
+#define MAX_INFRACTION_NYC 30
+#define MAX_AGENCY_NYC 35
+#define MAX_LINE_LENGTH 256
 
 int main(int argc, char *argv[]) {
     if ( argc < 3 || argc > 5 ) {
-        // Salida por error de parámetros. Debo chequear potenciales archivos que rompar el programa
+        // salida por error
     }
 
-    // Chequeo los argumentos para crear mi ADT
-    ticketsADT ticketsNYC = createTicketADT(argc, argv);
+    ticketsADT ticketsNYC = createTicketADT(argc, argv, MAX_INFRACTION_NYC, MAX_AGENCY_NYC);
+    char* delimiters = ";\n"; 
+    char buffer_line[MAX_LINE_LENGTH];
 
-    // Primera parte: Leo argv[2], el cual será el archivo csv donde guardo infracciones con su respectivo id
-    // Formarto: id;descripcion
-    FILE *file_infr = fopen(argv[2], "r");
-    if ( file_infr == NULL ) { 
-        // Salida por error, no hay archivo
-        perror("Error al abrir el archivo");
-        return 1;
-    }
-    
-    tInfraction infr_aux;// Estructura donde iré guardando los datos de cada infracción a medida que leo el archivo
-    char aux_line[MAX_LINE_LENGTH];
-    char* delimiters = ";\n"; // Delimitadores para strtok
-    while ( fgets(aux_line, sizeof(aux_line), file_infr) != NULL ) {
-        char *token = strtok(aux_line, delimiters);
-        infr_aux.id = atoi(token);
-        infr_aux.description = strtok(NULL, delimiters);
-        insertInfraction(infr_aux, ticketsNYC, MAX_LINE_LENGTH);
-    }
-    // le pasamos al cdt el puntero para que haga la copia
+    FILE *file_infr = openFile(argv[2]);
+    loadInfractions(ticketsNYC, file_infr, delimiters, buffer_line);
     fclose(file_infr);
+
+    FILE *file_tickets = openFile(argv[1]);
+    loadTickets(ticketsNYC, file_tickets, delimiters, buffer_line);
+    fclose(file_tickets);
+
+    query1(ticketsNYC);
+    query2(ticketsNYC);
+    query3(ticketsNYC);
+    query4(ticketsNYC);
+
+    freeTickets(ticketsNYC);
 }
 
-// falta modularizar, se puede hacer una generica para las dos ciudades como el createTicketAdt
-// loadTicket
-// podriamos tener un campo en el cdt en vez de pasarle todo el tiempo el maxlinelength
-
-ticketsADT createTicketAdt(int argc, char *argv[]) {
-    time_t now;
-    struct tm *local;
-    time(&now);
-    local = localtime(&now);
-    int year = local->tm_year + 1900;
-    ticketsADT tickets;
-    if ( argc == 3 ) { // Si no me pasan el año de cierre, obtengo el actual con la librería time.h
-        tickets = newTickets(0, year);
+void loadTicketsNYC(ticketsADT ticketsNYC, FILE *file_tickets, char *delimiters, char buffer_line[]){
+    tTicket ticket_aux;
+    fgets(buffer_line, MAX_LINE_LENGTH, file_tickets);
+    while ( fgets(buffer_line, MAX_LINE_LENGTH, file_tickets) != NULL ) {
+        strcpy(ticket_aux.patente, strtok(buffer_line, delimiters)); 
+        ticket_aux.year = atoi(strtok(NULL, "-"));       
+        ticket_aux.month = (char) atoi(strtok(NULL, "-")); // atoi me da int, casteo a char¿?
+        strtok(NULL, delimiters); // descarto el dia
+        strtok(NULL, delimiters); // descarto el valor de la multa
+        ticket_aux.agency = strtok(NULL, delimiters);
+        insertTicket(ticket_aux, ticketsNYC);
     }
-    else if ( argc == 4 ) {
-        tickets = newTickets(atoi(argv[3]), year);
-    }
-    else {
-        int beginYear = atoi(argv[3]);
-        int endYear = atoi(argv[4]);
-        if ( beginYear > endYear ) {
-            // Salida por error de los parámetros.
-        }
-        tickets = newTickets(beginYear, endYear);
-    }
-    return tickets;
 }
+
+/*
+plate;issueDate;infractionId;fineAmount;issuingAgency
+KJZ9028;2022-05-23;21;65;TRAFFIC
+JFS2559;2020-03-06;38;35;TRAFFIC
+JPP3277;2021-08-06;36;50;DEPARTMENT OF TRANSPORTATION
+
+typedef struct ticket {
+  size_t id;
+  char *agency;
+  size_t year;
+  char month;
+  char patente[10];
+} tTicket;
+*/
