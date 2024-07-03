@@ -35,7 +35,8 @@ struct ticketsCDT {
   size_t beginYear;
   size_t endYear;
   size_t infractionsDim;
-  size_t longDescr;
+  size_t maxLongDescription;
+  size_t maxLongAgencyName;
   tInfractionNode *infractions; // Vector de infracciones ordenados por id;
   tInfractionNode *firstByAmount;
   tInfractionNode *currentByAmount;
@@ -47,7 +48,7 @@ struct ticketsCDT {
 
 
 
-ticketsADT newTickets(size_t beginYear, size_t endYear, size_t longDescr) {
+ticketsADT newTickets(size_t beginYear, size_t endYear, size_t maxLongDescription, size_t maxLongAgencyName) {
   errno = 0;
 
   ticketsADT tickets = calloc(1, sizeof(*tickets));
@@ -63,19 +64,20 @@ ticketsADT newTickets(size_t beginYear, size_t endYear, size_t longDescr) {
   }
   tickets->beginYear = beginYear;
   tickets->endYear = endYear;
-  tickets->longDescr=longDescr;
+  tickets->maxLongDescription=maxLongDescription;
+  tickets->maxLongAgencyName=maxLongAgencyName;
   return tickets;
 }
 
 static char *
-copyDescription(char * description, size_t longDescription){
+copyName(char * name, size_t longName){
   errno=0;
-  char * newDescription=malloc(longDescription);
-  if (newDescription == NULL || errno == ENOMEM){
+  char * newName=malloc(longName);
+  if (newName == NULL || errno == ENOMEM){
     exit(1); //CHEQUEAR ESTO
   }
-  strcpy(newDescription, description);
-  return newDescription;
+  strcpy(newName, name);
+  return newName;
 }
 
 int insertInfraction(tInfraction infraction, ticketsADT tickets){
@@ -103,7 +105,7 @@ int insertInfraction(tInfraction infraction, ticketsADT tickets){
 
   /*como ya se que el id no tiene vinculado una descripcion, agrego la descripcion y seteo todo en NUll o 0, retorno 1*/
   tInfractionNode * ticket=&tickets->infractions[infraction.id];
-  ticket->description=infraction.description;
+  ticket->description=copyName(infraction.description, tickets->maxLongDescription);
   ticket->infractionAmount=0;
   ticket->nextByAlpha=NULL;
   ticket->nextByAmount=NULL;
@@ -131,7 +133,7 @@ addTicketToAgencyAux(tAgencyList agencyNode, size_t id){
 
 /*Funcion auxiliar para crear un nodo de una agencia que es la primera vez que registra una infraccion*/
 static tAgencyList 
-newAgencyNode(tAgencyList agencyNode, char * agency, size_t id, size_t infractionsDim){
+newAgencyNode(tAgencyList agencyNode, char * agency, size_t id, size_t infractionsDim, size_t maxLongAgencyName){
 
   errno=0;
   tAgencyList newAgency=malloc(sizeof(*newAgency));
@@ -139,7 +141,7 @@ newAgencyNode(tAgencyList agencyNode, char * agency, size_t id, size_t infractio
     return agencyNode; //Ante un error retorna la misma lista sin hacer cambios
   }
 
-  newAgency->name=agency;
+  newAgency->name=copyName(agency,maxLongAgencyName);
   newAgency->nextAgency=agencyNode;
   newAgency->maxId=id;
   newAgency->inf=calloc(infractionsDim, sizeof(newAgency->inf[0]));
@@ -150,18 +152,18 @@ newAgencyNode(tAgencyList agencyNode, char * agency, size_t id, size_t infractio
 
 /*Funcion auxiliar para a una agencia agregarle una infraccion, en caso de que la agencia todavia no tenga ninguna infraccion agrega la agencia a la lista*/
 static tAgencyList 
-addTicketToAgency(tAgencyList agencyNode, char * agency, size_t id, size_t infractionsDim){
+addTicketToAgency(tAgencyList agencyNode, char * agency, size_t id, size_t infractionsDim, size_t maxLongAgencyName){
   int c;
 
   if (agencyNode == NULL || (c=strcmp(agencyNode->name, agency) > 0)){
-    return newAgencyNode(agencyNode, agency, id, infractionsDim);
+    return newAgencyNode(agencyNode, agency, id, infractionsDim, maxLongAgencyName);
   }
 
   if (!c){
     return addTicketToAgencyAux(agencyNode, id);
   }
 
-  agencyNode->nextAgency=addTicketToAgency(agencyNode->nextAgency, agency, id, infractionsDim);
+  agencyNode->nextAgency=addTicketToAgency(agencyNode->nextAgency, agency, id, infractionsDim, maxLongAgencyName);
   return agencyNode;
 }
 
@@ -181,7 +183,7 @@ int insertTicket(tTicket ticket, ticketsADT tickets){
     return 0; 
   }
 
-  tickets->agencies=addTicketToAgency(tickets->agencies, ticket.agency, ticket.id, tickets->infractionsDim);
+  tickets->agencies=addTicketToAgency(tickets->agencies, ticket.agency, ticket.id, tickets->infractionsDim, tickets->maxLongAgencyName);
   
   addTicketToYears(tickets->years, ticket.year, ticket.month);
 

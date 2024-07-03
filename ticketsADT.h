@@ -46,7 +46,7 @@ typedef struct year {
 ** Almacena el rango de anios (beginYear y endYear inclusive) para los cuales se van a querer obtener los tres meses con mayores cantidades de multas (por anio).
 ** Si beginYear es 0, significa que quiere las tres multas mas populares de cada anio registrado. 
 */
-ticketsADT newTickets(size_t beginYear, size_t endYear);
+ticketsADT newTickets(size_t beginYear, size_t endYear,size_t maxLongDescription, size_t maxLongAgencyName);
 
 /* Vincula el id con la descripcion de la infraccion. 
 ** Retorna 0 si el id ya estaba vinculado a una descripcion (no lo inserta).
