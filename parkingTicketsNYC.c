@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     fclose(file_infr);
 
     FILE *file_tickets = openFile(argv[1]);
-    loadTickets(ticketsNYC, file_tickets, delimiters, buffer_line);
+    loadTicketsNYC(ticketsNYC, file_tickets, delimiters, buffer_line);
     fclose(file_tickets);
 
     query1(ticketsNYC);
@@ -43,6 +43,24 @@ void loadTicketsNYC(ticketsADT ticketsNYC, FILE *file_tickets, char *delimiters,
         strtok(NULL, delimiters); // descarto el dia
         strtok(NULL, delimiters); // descarto el valor de la multa
         ticket_aux.agency = strtok(NULL, delimiters);
+        insertTicket(ticket_aux, ticketsNYC);
+    }
+}
+
+void loadTicketsNYC2(ticketsADT ticketsNYC, FILE *file_tickets){
+    tTicket ticket_aux;
+    fscanf(file_tickets,"%*[^\n]\n");
+
+    char year_ascii[11]; //magic
+    char month_ascii[11];
+    char id_ascii[11];
+    char agency_ascii[36];
+
+    while ( fscanf(file_tickets, "%[^;];%[^-]-%[^-]-%*[^;];%[^;];%*[^;];[^\n]\n", ticket_aux.patente, year_ascii, month_ascii, id_ascii, agency_ascii) == FIELDS) {
+        ticket_aux.id = atoi(id_ascii);
+        ticket_aux.year = atoi(year_ascii);
+        ticket_aux.month = (char) atoi(month_ascii);
+        ticket_aux.agency = agency_ascii;
         insertTicket(ticket_aux, ticketsNYC);
     }
 }

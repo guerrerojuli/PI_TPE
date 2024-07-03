@@ -74,6 +74,10 @@ int hasNextPlateByAlpha(ticketsADT tickets);
 
 tInfractionPlateByAlpha nextPlateByAlpha(ticketsADT tickets);
 
+// hay que liberar el vector devuelto
+// orden descendente el vector (2011, 2012, 2013,...)
+// mes 0 January
+
 tYear *getTop3Month(ticketsADT tickets);
 
 void freeTickets(ticketsADT tickets);
