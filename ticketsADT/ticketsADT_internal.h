@@ -7,18 +7,20 @@
 #define N_LETTER 'Z' - 'A' + 1
 #define N_NUMS '9' - '0' + 1
 
-struct plateNode {
+typedef struct plateNode {
   char *plate;
-  size_t infractionAmout;
-  struct plateNode *next;
-};
+  size_t infractionAmount;
+  size_t height;
+  struct plateNode *left;
+  struct plateNode *right;
+} tPlateNode;
 
-typedef struct plateNode *tPlateList;
+typedef struct plateNode *tPlateTree;
 
 typedef struct infractionNode {
   char *description;
   size_t infractionAmount;
-  tPlateList plateList[N_LETTER + N_NUMS];
+  tPlateTree plateTree;
   struct infractionNode *nextByAmount;
   struct infractionNode *nextByAlpha;
 } tInfractionNode;
@@ -36,6 +38,7 @@ struct ticketsCDT {
   size_t beginYear;
   size_t endYear;
   size_t infractionsDim;
+  size_t plateLength;
   size_t descLength;
   size_t agencyLength;
   tInfractionNode *infractions; // Vector de infracciones ordenados por id;

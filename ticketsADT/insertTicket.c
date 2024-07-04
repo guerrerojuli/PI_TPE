@@ -1,3 +1,4 @@
+#include "plateTree.h"
 #include "ticketsADT.h"
 #include "ticketsADT_internal.h"
 #include "utils.h"
@@ -9,7 +10,7 @@ static tAgencyList addTicketToAgency(tAgencyList agencyNode, char *agency, size_
 
 static void addTicketToYears(size_t (*years)[N_MONTH], size_t year, size_t month, size_t minYear, size_t maxYear);
 
-static void addTicketToInfraction(tInfractionNode *infractions, size_t id, char *plate);
+static void addTicketToInfraction(tInfractionNode *infractions, size_t id, char *plate, size_t plateLength);
 
 int insertTicket(tTicket ticket, ticketsADT tickets) {
   if (ticket.id >= tickets->infractionsDim) {
@@ -17,14 +18,18 @@ int insertTicket(tTicket ticket, ticketsADT tickets) {
   }
 
   errno = 0;
-  tickets->agencies =addTicketToAgency(tickets->agencies, ticket.agency, ticket.id, tickets->infractionsDim, tickets->agencyLength);
+  tickets->agencies = addTicketToAgency(tickets->agencies, ticket.agency, ticket.id, tickets->infractionsDim, tickets->agencyLength);
   if (errno == ENOMEM) {
     return -1;
   }
 
   addTicketToYears(tickets->years, ticket.year, ticket.month, tickets->beginYear, tickets->endYear);
 
-  addTicketToInfraction(tickets->infractions, ticket.id, ticket.plate);
+  errno = 0;
+  addTicketToInfraction(tickets->infractions, ticket.id, ticket.plate, tickets->plateLength);
+  if (errno == ENOMEM) {
+    return -1;
+  }
 
   return 1;
 }
@@ -65,7 +70,6 @@ static tAgencyList addTicketToAgency(tAgencyList agencyNode, char *agency, size_
     if (agencyNode->inf[id] > agencyNode->inf[agencyNode->maxId]) {
       agencyNode->maxId = id;
     }
-    
   }
 
   return agencyNode;
@@ -74,9 +78,14 @@ static tAgencyList addTicketToAgency(tAgencyList agencyNode, char *agency, size_
 /* Funcion auxiliar para a un anio y un mes agregarle una infraccion
  * si el anio no esta entre el rango de anios solicitado no se agrega
  */
-static void addTicketToYears(size_t (*years)[N_MONTH], size_t year, size_t month, size_t minYear, size_t maxYear){
-  if (year<minYear || year>maxYear){
+static void addTicketToYears(size_t (*years)[N_MONTH], size_t year, size_t month, size_t minYear, size_t maxYear) {
+  if (year < minYear || year > maxYear) {
     return;
   }
-  years[year-minYear][month-1]++;
+  years[year - minYear][month - 1]++;
+}
+
+static void addTicketToInfraction(tInfractionNode *infractions, size_t id, char *plate, size_t plateLength) {
+  infractions[id].infractionAmount++;
+  infractions[id].plateTree = insertToPlateTree( infractions[id].plateTree, plate, plateLength); // TODO solve magin number
 }

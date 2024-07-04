@@ -9,7 +9,7 @@
 
 
 //FALTA AGREGAR EL LONGPLATE AL CDT
-ticketsADT newTickets(size_t beginYear, size_t endYear, size_t descLength, size_t agencyLength, size_t longPlate) {
+ticketsADT newTickets(size_t beginYear, size_t endYear, size_t descLength, size_t agencyLength, size_t plateLength) {
   errno = 0;
   ticketsADT tickets = calloc(1, sizeof(*tickets));
   if (tickets == NULL || errno == ENOMEM) {
@@ -25,6 +25,7 @@ ticketsADT newTickets(size_t beginYear, size_t endYear, size_t descLength, size_
   tickets->beginYear = beginYear;
   tickets->endYear = endYear;
   tickets->descLength = descLength;
+  tickets->plateLength = plateLength;
   tickets->agencyLength = agencyLength;
   return tickets;
 }
@@ -59,9 +60,7 @@ int insertInfraction(tInfraction infraction, ticketsADT tickets) {
   ticket->infractionAmount = 0;
   ticket->nextByAlpha = NULL;
   ticket->nextByAmount = NULL;
-  for (int i = 0; i < N_LETTER + N_NUMS; i++) {
-    ticket->plateList[i] = NULL;
-  }
+  ticket->plateTree = NULL;
   return 1;
 }
 
