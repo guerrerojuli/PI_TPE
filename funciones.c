@@ -5,13 +5,16 @@
 #include "ticketsADT.h"
 #define MAX_MONTHS 12 // podrian utilizarse los 6 primeros
 #define MAX_LINE_LENGTH 256
+#define START_YEAR 1900
+#define SUCCESS 0
+#define ERROR 1
 
 // Archivo en el cual guardamos las funciones auxiliares utilizadas en el main de CHICAGO y NYC análogamente
 FILE *openFile(char* arg) {
     FILE *res = fopen(arg, "r");
     if ( res == NULL ) {
-        perror("Error al abrir archivo.");
-        exit(1);
+        fprintf(stderr, "Error al abrir archivo: %s\n", arg);
+        exit(ERROR);
     }
     return res;
 }
@@ -23,17 +26,17 @@ ticketsADT createTicketADT(int argc, char *argv[], size_t max_description, size_
     local = localtime(&now);
     int year = local->tm_year + 1900;
     ticketsADT tickets;
+    int beginYear, endYear;
     if ( argc == 3 ) { // Si no me pasan el año de cierre, obtengo el actual con la librería time.h
-        tickets = newTickets(0, year, max_description, max_agency_name);
+        tickets = newTickets(START_YEAR, year, max_description, max_agency_name);
     }
-    else if ( argc == 4 ) {
-        tickets = newTickets(atoi(argv[3]), year, max_description, max_agency_name);
+    else if ( argc == 4 && (beginYear = atoi(argv[3]) >= 0) ) {
+        tickets = newTickets(beginYear, year, max_description, max_agency_name);
     }
     else {
-        int beginYear = atoi(argv[3]);
-        int endYear = atoi(argv[4]);
-        if ( beginYear > endYear ) {
-            // Salida por error de los parámetros.
+        if ( beginYear > (endYear = atoi(argv[4])) || endYear < 0 || beginYear < 0 ) {
+            fprintf(stderr, "Error en los años pasados como parametros\n");
+            exit(ERROR);
         }
         tickets = newTickets(beginYear, endYear, max_description, max_agency_name);
     }
@@ -46,9 +49,12 @@ void loadInfractions(ticketsADT tickets, FILE *file_infr, char* delimiters, char
     while ( fgets(buffer_line, MAX_LINE_LENGTH, file_infr) != NULL ) {
         infr_aux.id = atoi(strtok(buffer_line, delimiters));
         infr_aux.description = strtok(NULL, delimiters);
-        insertInfraction(infr_aux, tickets);
         // Al mandar la descripcion, el CDT por atrás ya hace la copia. En el proximo bucle, se pisa
         // buffer_line pero no interesa, ya que en el cdt vos tenes la copia
+        if ( insertInfraction(infr_aux, tickets) == -1 ) {
+            fprintf(stderr, "Error al cargar datos del archivo de infracciones por falta de memoria.\n");
+            return ERROR;
+        }
     }
 }
 
@@ -100,8 +106,7 @@ void query4(ticketsADT tickets) {
     int dim = getYears(tickets);
     tYear *resp = getTop3Month(tickets);
     static char *months[MAX_MONTHS] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-    for (int i = 0; i < dim; i++)
-    {
+    for (int i = 0; i < dim; i++) {
         fprintf(query4, "%d;%s;%s;%s\n", resp[i].year, months[resp[i].top[0]], months[resp[i].top[1]], months[resp[i].top[2]]);
     }
     fclose(query4);

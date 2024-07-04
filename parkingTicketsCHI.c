@@ -4,15 +4,16 @@
 #include <time.h>
 #include "./ticketsADT.h"
 #include "./funciones.c"
-#define TICKETS_FIELDS 4
-#define MAX_LONG_INT 11 // Maxima longitud de un int y el cero final
+#define TICKETS_FIELDS 5
+#define MAX_LONG_INT 11 // Maxima cantidad de caracteres de un int y el cero final
 #define MAX_INFRACTION_CHI 50
 #define MAX_AGENCY_CHI 13
 #define MAX_LINE_LENGTH 256 // Preguntar si es necesario que sea exactamente id + ; + name
 
 int main(int argc, char *argv[]) {
     if ( argc < 3 || argc > 5 ) {
-        // Salida por error de parámetros. Debo chequear potenciales archivos que rompar el programa
+        fprintf(stderr, "Error: cantidad de parámetros inválida\n");
+        return ERROR;
     }
 
     // Creo mi ADT, en el cual guardaré los datos
@@ -22,7 +23,7 @@ int main(int argc, char *argv[]) {
 
     // Primera parte: Leo argv[2], el cual será el archivo csv donde guardo infracciones con su respectivo id
     // Formarto: id;descripcion
-    FILE *file_infr = openFile(argv[2]); 
+    FILE *file_infr = openFile(argv[2]);
     loadInfractions(ticketsCHI, file_infr, delimiters, buffer_line);
     fclose(file_infr);
 
@@ -53,12 +54,15 @@ void loadTicketsCHI(ticketsADT ticketsCHI, FILE *file_tickets, char* delimiters,
         ticket_aux.agency = strtok(NULL, delimiters);
         ticket_aux.id = atoi(strtok(NULL, delimiters));
         strtok(NULL, delimiters); // No me interesa el monto
-        insertTicket(ticket_aux, ticketsCHI);
+        if ( insertTicket(ticket_aux, ticketsCHI) == ERROR ) {
+            fprintf(stderr, "Error al cargar datos del archivo de multas por falta de memoria.\n");
+            return ERROR;
+        }
     }
 }
 
 // Implementacion con fscanf
-void loadTicketsCHI_2(ticketsADT ticketsCHI, FILE *file_tickets) {
+void loadTicketsCHI2(ticketsADT ticketsCHI, FILE *file_tickets) {
     char id_aux[MAX_LONG_INT];
     char year_aux[MAX_LONG_INT];
     char month_aux[MAX_LONG_INT];
@@ -70,7 +74,10 @@ void loadTicketsCHI_2(ticketsADT ticketsCHI, FILE *file_tickets) {
         ticket_aux.year = atoi(year_aux);
         ticket_aux.month = (char)atoi(month_aux);
         ticket_aux.agency = agency_aux;
-        insertTicket(ticket_aux, ticketsCHI);
+        if ( insertTicket(ticket_aux, ticketsCHI) == -1 ) {
+            fprintf(stderr, "Error al cargar datos del archivo de multas por falta de memoria.\n");
+            return ERROR;
+        }
     }
 }
 
