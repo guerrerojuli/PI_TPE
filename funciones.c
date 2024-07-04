@@ -52,25 +52,28 @@ void loadInfractions(ticketsADT tickets, FILE *file_infr, char* delimiters, char
     }
 }
 
-void query1(ticketsADT tickets) {
-    FILE *query1 = fopen("./query1.csv", "w");
-    if ( query1 == NULL ) {
-        // Salida por error
+FILE *createQueryFile(char* name) {
+    FILE *res = fopen(name, "w");
+    if ( res == NULL ) {
+        fprintf(stderr, "Error al crear el archivo: %s\nPuede provenir por falta de memoria.\n", name);
+        exit(1);
     }
+    return res;
+}
+
+void query1(ticketsADT tickets) {
+    FILE *query1 = createQueryFile("./query1.csv");
     fprintf(query1, "infraction;tickets\n"); // Primera linea
     toBeginByAmount(tickets);
     while ( hasNextByAmount(tickets) ) {
         tInfractionByAmount aux = nextByAmount(tickets);
-        fprintf(query1, "%s;%d\n", aux.description, aux.amount); // Hay que chequear errores?
+        fprintf(query1, "%s;%d\n", aux.description, aux.amount);
     }
     fclose(query1);
 }
 
 void query2(ticketsADT tickets) {
-    FILE *query2 = fopen("./query2.csv", "w");
-    if ( query2 == NULL ) {
-        // Salida por error
-    }
+    FILE *query2 = createQueryFile("./query2.csv");
     fprintf(query2, "issuingAgency;infraction;tickets\n");
     toBeginByAgency(tickets);
     while ( hasNextByAmount(tickets) ) {
@@ -81,10 +84,7 @@ void query2(ticketsADT tickets) {
 }
 
 void query3(ticketsADT tickets) {
-    FILE *query3 = fopen("./query3.csv", "w");
-    if ( query3 == NULL ) {
-        // Salida por error
-    }
+    FILE *query3 = createQueryFile("./query3.csv");
     fprintf(query3, "infraction;plate;tickets\n");
     toBeginPlateByAlpha(tickets);
     while ( hasNextPlateByAlpha(tickets) ) {
@@ -95,10 +95,7 @@ void query3(ticketsADT tickets) {
 }
 
 void query4(ticketsADT tickets) {
-    FILE *query4 = fopen("./query4.csv", "w");
-    if ( query4 == NULL ) {
-        // Salida por error
-    }
+    FILE *query4 = createQueryFile("./query4.csv");
     fprintf(query4, "year;ticketsTop1Month;ticketsTop2Month;ticketsTop3Month\n");
     int dim = getYears(tickets);
     tYear *resp = getTop3Month(tickets);
