@@ -7,7 +7,7 @@
 
 static tAgencyList addTicketToAgency(tAgencyList agencyNode, char *agency, size_t id, size_t infractionsDim, size_t maxLongAgencyName);
 
-static void addTicketToYears(size_t (*years)[N_MONTH], size_t year, size_t month);
+static void addTicketToYears(size_t (*years)[N_MONTH], size_t year, size_t month, size_t minYear, size_t maxYear);
 
 static void addTicketToInfraction(tInfractionNode *infractions, size_t id, char *plate);
 
@@ -22,7 +22,7 @@ int insertTicket(tTicket ticket, ticketsADT tickets) {
     return -1;
   }
 
-  addTicketToYears(tickets->years, ticket.year, ticket.month);
+  addTicketToYears(tickets->years, ticket.year, ticket.month, tickets->beginYear, tickets->endYear);
 
   addTicketToInfraction(tickets->infractions, ticket.id, ticket.plate);
 
@@ -69,4 +69,14 @@ static tAgencyList addTicketToAgency(tAgencyList agencyNode, char *agency, size_
   }
 
   return agencyNode;
+}
+
+/* Funcion auxiliar para a un anio y un mes agregarle una infraccion
+ * si el anio no esta entre el rango de anios solicitado no se agrega
+ */
+static void addTicketToYears(size_t (*years)[N_MONTH], size_t year, size_t month, size_t minYear, size_t maxYear){
+  if (year<minYear || year>maxYear){
+    return;
+  }
+  years[year-minYear][month-1]++;
 }
