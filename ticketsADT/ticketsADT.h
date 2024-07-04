@@ -44,7 +44,7 @@ typedef struct year {
 ** Inicialmente esta vacia (no hay tickets).
 ** Si no se pudo crear retorna NULL.
 */
-ticketsADT newTickets(size_t beginYear, size_t endYear,size_t descLength, size_t agencyLength);
+ticketsADT newTickets(size_t beginYear, size_t endYear,size_t descLength, size_t agencyLength, size_t longPlate);
 
 /* Vincula el id con la descripcion de la infraccion. 
 ** Retorna 0 si el id ya estaba vinculado a una descripcion (no lo inserta).
@@ -64,9 +64,9 @@ void toBeginByAmount(ticketsADT tickets);
 
 int hasNextByAmount(ticketsADT tickets);
 
-tInfraction nextByAmount(ticketsADT tickets);
+tInfractionByAmount nextByAmount(ticketsADT tickets);
 
-void toBeginAgeny(ticketsADT tickets);
+void toBeginAgency(ticketsADT tickets);
 
 int hasNextAgency(ticketsADT tickets);
 
@@ -78,7 +78,10 @@ int hasNextPlateByAlpha(ticketsADT tickets);
 
 tInfractionPlateByAlpha nextPlateByAlpha(ticketsADT tickets);
 
-tYear *getTop3Month(ticketsADT tickets);
+/* Devuelve un arreglo (de tYear) en orden creciente que en cada posicion tiene el anio con los tres meses con mas multas (si menos de tres meses tienen multas devuelve en lugar de un numero de un mes el numero cero)
+** amountYears es un parametro de entrada/salida donde se va a guardar la cantidad de anios para los cuales se van a registrar los tres meses con mas multas
+*/
+tYear * getTop3Month(ticketsADT tickets, size_t * amountYears);
 
 void freeTickets(ticketsADT tickets);
 

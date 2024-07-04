@@ -7,7 +7,9 @@
 
 #include "insertTicket.c"
 
-ticketsADT newTickets(size_t beginYear, size_t endYear, size_t descLength, size_t agencyLength) {
+
+//FALTA AGREGAR EL LONGPLATE AL CDT
+ticketsADT newTickets(size_t beginYear, size_t endYear, size_t descLength, size_t agencyLength, size_t longPlate) {
   errno = 0;
   ticketsADT tickets = calloc(1, sizeof(*tickets));
   if (tickets == NULL || errno == ENOMEM) {
@@ -61,4 +63,67 @@ int insertInfraction(tInfraction infraction, ticketsADT tickets) {
     ticket->plateList[i] = NULL;
   }
   return 1;
+}
+
+typedef struct month {
+  char month;
+  size_t amount;
+} month;
+
+
+static void getTop3MonthAux(size_t * year , month * first, month * second, month * third){
+
+  for (int i=0 ; i < N_MONTH ; i++){
+
+    if (year[i] > first->amount){
+      *third=*second;
+      *second=*first;
+      first->amount=year[i];
+      first->month=i+1;
+    }
+    else if (year[i] > second->amount){
+      *third=*second;
+      second->amount=year[i];
+      second->month=i+1;
+    }
+    else if (year[i] > third->amount){
+      third->amount=year[i];
+      third->month=i+1;
+    }
+
+  }
+
+}
+
+tYear * getTop3Month(ticketsADT tickets, size_t * amountYears){
+  month first={0,0}, second={0,0}, third={0,0}, reset={0,0};
+
+  int yearsRange=tickets->endYear - tickets->beginYear + 1, i=0, j=0;
+
+  errno=0;
+  tYear * arr=malloc(yearsRange * sizeof(*arr));
+  if (arr == NULL || errno ==  ENOMEM){
+    return NULL;
+  }
+
+  for (; i < yearsRange ; i++){
+
+    getTop3MonthAux(tickets->years[i], &first, &second, &third);
+
+    if (first.month || second.month || third.month){
+      arr[j].year=i + tickets->beginYear;
+      arr[j].top[0]=first.month;
+      arr[j].top[1]=second.month;
+      arr[j++].top[2]=third.month;
+      first=second=third=reset;
+    }
+  }
+
+  arr=realloc(arr, j * sizeof(*arr));
+  if (arr == NULL || errno ==  ENOMEM){
+    //ACA NOSE SI DEBERIA AGREGAR UN FREE(ARR)
+    return NULL;
+  }
+
+  return arr;
 }
