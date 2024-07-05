@@ -25,12 +25,12 @@ typedef struct infractionNode {
   struct infractionNode *nextByAlpha;
 } tInfractionNode;
 
-struct agencyNode {
+typedef struct agencyNode {
   char *name;
   size_t *inf; // Vector de infracciones donde se almacena la cantidad ordenados por id
   size_t maxId;
   struct agencyNode *nextAgency;
-};
+} tAgencyNode;
 
 typedef struct agencyNode *tAgencyList;
 
@@ -48,6 +48,7 @@ struct ticketsCDT {
   tInfractionNode *currentByAlpha;
   size_t (*years)[N_MONTH];
   tAgencyList agencies;
+  tAgencyNode *currentAgency;
 };
 
 #endif

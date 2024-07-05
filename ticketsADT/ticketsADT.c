@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "insertTicket.c"
+#include "iteratorByAmount.c"
 
 
 //FALTA AGREGAR EL LONGPLATE AL CDT
