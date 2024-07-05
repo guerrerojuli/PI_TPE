@@ -86,5 +86,5 @@ static void addTicketToYears(size_t (*years)[N_MONTH], size_t year, size_t month
 
 static void addTicketToInfraction(tInfractionNode *infractions, size_t id, char *plate, size_t plateLength) {
   infractions[id].infractionAmount++;
-  infractions[id].plateTree = insertToPlateTree( infractions[id].plateTree, plate, plateLength); // TODO solve magin number
+  infractions[id].plateTree = insertToPlateTree(infractions[id].plateTree, plate, plateLength, &infractions[id].maxPlate, &infractions[id].plateAmount); 
 }

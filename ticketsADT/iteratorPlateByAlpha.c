@@ -22,7 +22,7 @@ static tInfractionNode *orderTicketsByAlphaRec(tInfractionNode *infrNode, tInfra
 
 static void orderTicketsByAlpha (ticketsADT tickets){
     for (int i=0 ; i < tickets->infractionsDim ; i++){
-        tickets->firstByAmount=orderTicketsByAlphaRec(tickets->firstByAmount, &tickets->infractions[i]);
+        tickets->firstByAlpha = orderTicketsByAlphaRec(tickets->firstByAmount, &tickets->infractions[i]);
     }
 }
 
