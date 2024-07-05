@@ -77,6 +77,13 @@ int height(tPlateNode *node) {
   return node->height;
 }
 
+int getBalance(tPlateNode *node) {
+  if (node == NULL) {
+    return 0;
+  }
+  return height(node->left) - height(node->right);
+}
+
 tPlateNode *rotateRight(tPlateNode *node) {
   tPlateNode *left = node->left;
   tPlateNode *subRight = left->right;
@@ -105,9 +112,13 @@ tPlateNode *rotateLeft(tPlateNode *node) {
   return right;
 }
 
-int getBalance(tPlateNode *node) {
+// Función para liberar la memoria del árbol
+void freeTree(tPlateNode *node) {
   if (node == NULL) {
-    return 0;
+    return;
   }
-  return height(node->left) - height(node->right);
+  free(node->plate);
+  freeTree(node->left);
+  freeTree(node->right);
+  free(node);
 }

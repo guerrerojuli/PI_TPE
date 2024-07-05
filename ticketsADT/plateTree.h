@@ -15,4 +15,6 @@ tPlateNode *rotateRight(tPlateNode *node);
 
 tPlateNode *rotateLeft(tPlateNode *node);
 
+void freeTree(tPlateNode *node);
+
 #endif
