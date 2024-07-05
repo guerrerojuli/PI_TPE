@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-tInfraction * orderTicketsByAmountRec(tInfractionNode *infrNode, tInfractionNode *infraction){
+static tInfractionNode * orderTicketsByAmountRec(tInfractionNode *infrNode, tInfractionNode *infraction){
     if (infraction->description == NULL){
         return infrNode;
     }

@@ -86,6 +86,7 @@ tInfractionPlateByAlpha nextPlateByAlpha(ticketsADT tickets);
 */
 tYear * getTop3Month(ticketsADT tickets, size_t * amountYears);
 
+/*Libera los recursos utilizados para registrar las infracciones*/
 void freeTickets(ticketsADT tickets);
 
 #endif

@@ -4,12 +4,13 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <stdlib.h>
+#include "plateTree.h"
 
-#include "insertTicket.c"
-#include "iteratorByAmount.c"
+// #include "insertTicket.c"
+// #include "iteratorByAmount.c"
 
 
-//FALTA AGREGAR EL LONGPLATE AL CDT
 ticketsADT newTickets(size_t beginYear, size_t endYear, size_t descLength, size_t agencyLength, size_t plateLength) {
   errno = 0;
   ticketsADT tickets = calloc(1, sizeof(*tickets));
@@ -119,6 +120,7 @@ tYear * getTop3Month(ticketsADT tickets, size_t * amountYears){
     }
   }
 
+  *amountYears=j; //ACA NOSE SI ESTO DEBERIA IR ACA O ABAJO
   arr=realloc(arr, j * sizeof(*arr));
   if (arr == NULL || errno ==  ENOMEM){
     //ACA NOSE SI DEBERIA AGREGAR UN FREE(ARR)
@@ -126,4 +128,39 @@ tYear * getTop3Month(ticketsADT tickets, size_t * amountYears){
   }
 
   return arr;
+}
+
+static void freeAgenciesRec(tAgencyList agencies){
+  if (agencies == NULL){
+    return;
+  }
+
+  freeAgenciesRec(agencies->nextAgency);
+
+  free(agencies->inf);
+  free(agencies->name);
+  free(agencies);
+}
+
+static void freeInfraction(tInfractionNode * infrNode){
+  if (infrNode->description == NULL){
+    return; 
+  }
+
+  free(infrNode->description);
+  freeTree(infrNode->plateTree);
+}
+
+void freeTickets(ticketsADT tickets){
+  free(tickets->years);
+
+  for (int i=0 ; i < tickets->infractionsDim ; i++){
+    freeInfraction(&tickets->infractions[i]);
+  }
+
+  free(tickets->infractions);
+
+  freeAgenciesRec(tickets->agencies);
+
+  free(tickets);
 }
