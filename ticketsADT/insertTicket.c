@@ -40,7 +40,7 @@ int insertTicket(tTicket ticket, ticketsADT tickets) {
  * */
 static tAgencyList addTicketToAgency(tAgencyList agencyNode, char *agency, size_t id, size_t infractionsDim, size_t maxLongAgencyName) {
   int cmp;
-  if (agencyNode == NULL || (cmp = strcmp(agencyNode->name, agency) > 0)) {
+  if (agencyNode == NULL || (cmp = strcmp(agencyNode->name, agency)) > 0) {
 
     errno = 0;
     tAgencyList newAgency = malloc(sizeof(*newAgency));
@@ -55,7 +55,14 @@ static tAgencyList addTicketToAgency(tAgencyList agencyNode, char *agency, size_
     }
     newAgency->nextAgency = agencyNode;
     newAgency->maxId = id;
+
+    errno=0;
     newAgency->inf = calloc(infractionsDim, sizeof(*newAgency->inf));
+    if (newAgency->inf == NULL || errno == ENOMEM){
+      free(newAgency);
+      return agencyNode;
+    }
+
     newAgency->inf[id]++;
     return newAgency;
 

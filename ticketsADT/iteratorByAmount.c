@@ -5,9 +5,6 @@
 #include <string.h>
 
 static tInfractionNode * orderTicketsByAmountRec(tInfractionNode *infrNode, tInfractionNode *infraction){
-    if (infraction->description == NULL){
-        return infrNode;
-    }
 
     if (infrNode == NULL){
         return infraction;
@@ -24,7 +21,11 @@ static tInfractionNode * orderTicketsByAmountRec(tInfractionNode *infrNode, tInf
 
 static void orderTicketsByAmount (ticketsADT tickets){
     for (int i=0 ; i < tickets->infractionsDim ; i++){
-        tickets->firstByAmount=orderTicketsByAmountRec(tickets->firstByAmount,&tickets->infractions[i]);
+
+        if (tickets->infractions[i].description != NULL){
+            tickets->firstByAmount=orderTicketsByAmountRec(tickets->firstByAmount,&tickets->infractions[i]);
+        }
+        
     }
 }
 

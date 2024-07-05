@@ -23,5 +23,6 @@ tAgency nextAgency(ticketsADT tickets) {
   agency.name = current->name;
   agency.amount = current->inf[current->maxId];
   agency.infractionDesc = tickets->infractions[current->maxId].description;
+  tickets->currentAgency=current->nextAgency;
   return agency;
 }

@@ -7,9 +7,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "insertTicket.c"
-#include "iteratorByAmount.c"
-#include "iteratorPlateByAlpha.c"
+// #include "insertTicket.c"
+// #include "iteratorByAmount.c"
+// #include "iteratorPlateByAlpha.c"
 
 
 ticketsADT newTickets(size_t beginYear, size_t endYear, size_t descLength, size_t agencyLength, size_t plateLength) {
@@ -105,7 +105,7 @@ tYear * getTop3Month(ticketsADT tickets, size_t * amountYears){
   int yearsRange=tickets->endYear - tickets->beginYear + 1, i=0, j=0;
 
   errno=0;
-  tYear * arr=malloc(yearsRange * sizeof(*arr));
+  tYear * arr=malloc(yearsRange * sizeof(*arr)); 
   if (arr == NULL || errno ==  ENOMEM){
     return NULL;
   }

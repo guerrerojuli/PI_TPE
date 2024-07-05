@@ -3,10 +3,6 @@
 #include <string.h>
 
 static tInfractionNode *orderTicketsByAlphaRec(tInfractionNode *infrNode, tInfractionNode *infraction) {
-  if (infraction->description == NULL) {
-    return infrNode;
-  }
-
   if (infrNode == NULL) {
     return infraction;
   }
@@ -22,7 +18,11 @@ static tInfractionNode *orderTicketsByAlphaRec(tInfractionNode *infrNode, tInfra
 
 static void orderTicketsByAlpha (ticketsADT tickets){
     for (int i=0 ; i < tickets->infractionsDim ; i++){
-        tickets->firstByAlpha = orderTicketsByAlphaRec(tickets->firstByAmount, &tickets->infractions[i]);
+
+      if (tickets->infractions[i].description != NULL){
+        tickets->firstByAlpha = orderTicketsByAlphaRec(tickets->firstByAlpha, &tickets->infractions[i]);
+      }
+
     }
 }
 
