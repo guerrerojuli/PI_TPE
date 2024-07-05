@@ -60,6 +60,9 @@ int insertInfraction(tInfraction infraction, ticketsADT tickets);
 */
 int insertTicket(tTicket ticket, ticketsADT tickets);
 
+/* Ordena la lista de infracciones en orden descendiente por cantidad de multas
+** Setea current en first que se va a usar para iterar en la lista
+*/
 void toBeginByAmount(ticketsADT tickets);
 
 int hasNextByAmount(ticketsADT tickets);
