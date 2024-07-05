@@ -41,11 +41,12 @@ int hasNextByAmount(ticketsADT tickets) {
 }
 
 tInfractionByAmount nextByAmount(ticketsADT tickets) {
-  if (!hasNextByAmount(tickets)) {
-    exit(1);
-  }
-
   tInfractionByAmount infr;
+  if (!hasNextByAmount(tickets)) {
+    infr.description = NULL;
+    infr.amount = 0;
+    return infr;
+  }
   infr.description = tickets->currentByAmount->description;
   infr.amount = tickets->currentByAmount->infractionAmount;
   tickets->currentByAmount = tickets->currentByAmount->nextByAmount;

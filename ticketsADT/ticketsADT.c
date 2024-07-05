@@ -1,14 +1,15 @@
 #include "ticketsADT.h"
 #include "ticketsADT_internal.h"
+#include "plateTree.h"
 #include "utils.h"
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
-#include "plateTree.h"
 
-// #include "insertTicket.c"
-// #include "iteratorByAmount.c"
+#include "insertTicket.c"
+#include "iteratorByAmount.c"
+#include "iteratorPlateByAlpha.c"
 
 
 ticketsADT newTickets(size_t beginYear, size_t endYear, size_t descLength, size_t agencyLength, size_t plateLength) {
@@ -60,6 +61,8 @@ int insertInfraction(tInfraction infraction, ticketsADT tickets) {
     return -1;
   }
   ticket->infractionAmount = 0;
+  ticket->maxPlate = NULL;
+  ticket->plateAmount = 0;
   ticket->nextByAlpha = NULL;
   ticket->nextByAmount = NULL;
   ticket->plateTree = NULL;

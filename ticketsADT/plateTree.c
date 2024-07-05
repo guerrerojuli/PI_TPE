@@ -8,10 +8,10 @@
 
 #define MAX(a, b) (((a) < (b)) ? (b) : (a))
 
-tPlateTree insertToPlateTree(tPlateTree plateTree, char *plate, size_t plateLength) {
+tPlateTree insertToPlateTree(tPlateTree plateTree, char *plate, size_t plateLength, char **maxPlate, size_t *maxPlateAmount) {
   if (plateTree == NULL) {
     errno = 0;
-    tPlateNode *node = calloc(1, sizeof(*node));
+    tPlateNode *node = malloc(sizeof(*node));
     if (node == NULL || errno == ENOMEM) {
       return plateTree;
     }
@@ -21,21 +21,30 @@ tPlateTree insertToPlateTree(tPlateTree plateTree, char *plate, size_t plateLeng
       return plateTree; // errno queda seteado
     }
     node->height = 1;
+    node->infractionAmount = 1;
+    node->left = node->right = NULL;
+    if (*maxPlate == NULL) {
+      *maxPlate = node->plate;
+      *maxPlateAmount = node->infractionAmount;
+    }
     return node;
   }
 
   int cmp;
   if ((cmp = strcmp(plateTree->plate, plate)) > 0) {
-    plateTree->left = insertToPlateTree(plateTree->left, plate, plateLength);
+    plateTree->left = insertToPlateTree(plateTree->left, plate, plateLength, maxPlate, maxPlateAmount);
   } else if (cmp < 0) {
-    plateTree->right = insertToPlateTree(plateTree->right, plate, plateLength);
+    plateTree->right = insertToPlateTree(plateTree->right, plate, plateLength, maxPlate, maxPlateAmount);
   } else {
     plateTree->infractionAmount++;
+    if (*maxPlateAmount < plateTree->infractionAmount) {
+      *maxPlateAmount = plateTree->infractionAmount;
+      *maxPlate = plateTree->plate;
+    }
     return plateTree;
   }
 
-  plateTree->height =
-      1 + MAX(height(plateTree->left), height(plateTree->right));
+  plateTree->height = 1 + MAX(height(plateTree->left), height(plateTree->right));
 
   // Obtener el factor de balance de este ancestro nodo para verificar si se
   // desbalanceó

@@ -5,7 +5,7 @@
 
 #define MAX(a, b) (((a) < (b)) ? (b) : (a))
 
-tPlateNode* insertToPlateTree(tPlateNode* node, char *plate, size_t plateLength);
+tPlateNode* insertToPlateTree(tPlateNode* node, char *plate, size_t plateLength, char **maxPlate, size_t *maxPlateAmount);
 
 int height(tPlateNode *node);
 

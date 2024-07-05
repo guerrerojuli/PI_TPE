@@ -21,6 +21,8 @@ typedef struct infractionNode {
   char *description;
   size_t infractionAmount;
   tPlateTree plateTree;
+  char *maxPlate;
+  size_t plateAmount;
   struct infractionNode *nextByAmount;
   struct infractionNode *nextByAlpha;
 } tInfractionNode;
