@@ -10,4 +10,9 @@
  */
 char *copyOfStr(const char *string, size_t strLength);
 
+/*
+ * Implementación de strcasecmp 
+ */
+int my_strcasecmp(const char *s1, const char *s2);
+
 #endif

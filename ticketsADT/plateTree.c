@@ -2,9 +2,6 @@
 #include "utils.h"
 #include <errno.h>
 #include <stdlib.h>
-#include <string.h>
-
-#include <stdio.h>
 
 tPlateTree insertToPlateTree(tPlateTree plateTree, char *plate, size_t plateLength, char **maxPlate, size_t *maxPlateAmount) {
   if (plateTree == NULL) {
@@ -29,7 +26,7 @@ tPlateTree insertToPlateTree(tPlateTree plateTree, char *plate, size_t plateLeng
   }
 
   int cmp;
-  if ((cmp = strcmp(plateTree->plate, plate)) > 0) {
+  if ((cmp = my_strcasecmp(plateTree->plate, plate)) > 0) {
     plateTree->left = insertToPlateTree(plateTree->left, plate, plateLength, maxPlate, maxPlateAmount);
   } else if (cmp < 0) {
     plateTree->right = insertToPlateTree(plateTree->right, plate, plateLength, maxPlate, maxPlateAmount);
@@ -52,7 +49,7 @@ tPlateTree insertToPlateTree(tPlateTree plateTree, char *plate, size_t plateLeng
 
   // Caso Izquierda Izquierda
   int cmpLeft;
-  if (balance > 1 && (cmpLeft = strcmp(plateTree->left->plate, plate) > 0)) {
+  if (balance > 1 && (cmpLeft = my_strcasecmp(plateTree->left->plate, plate) > 0)) {
     return rotateRight(plateTree);
   }
 
@@ -64,7 +61,7 @@ tPlateTree insertToPlateTree(tPlateTree plateTree, char *plate, size_t plateLeng
 
   // Caso Derecha Derecha
   int cmpRight;
-  if (balance < -1 && (cmpRight = strcmp(plateTree->right->plate, plate)) < 0)
+  if (balance < -1 && (cmpRight = my_strcasecmp(plateTree->right->plate, plate)) < 0)
     return rotateLeft(plateTree);
 
   // Caso Derecha Izquierda
