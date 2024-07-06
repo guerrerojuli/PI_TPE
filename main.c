@@ -5,6 +5,18 @@
 #include "./ticketsADT.h"
 #include "./funciones.c"
 
+#ifdef CHI
+    #define MAX_INFRACTION MAX_INFRACTION_CHI
+    #define MAX_AGENCY MAX_AGENCY_CHI
+    #define proocessBufferTickets(x,y) processBufferTicketsCHI(x,y)
+#elif NYC
+    #define MAX_INFRACTION MAX_INFRACTION_NYC
+    #define MAX_AGENCY MAX_AGENCY_NYC
+    #define proocessBufferTickets(x,y) processBufferTicketsNYC(x,y)
+#else
+    #error "Debe compilar con -D$(CIUDAD)"
+#endif
+
 int main(int argc, char *argv[]) {
     if ( argc < 3 || argc > 5 ) {
         fprintf(stderr, "Error: cantidad de parámetros inválida\n");
@@ -12,14 +24,8 @@ int main(int argc, char *argv[]) {
     }
 
     // Creo mi ADT, en el cual guardaré los datos
-    #ifdef CHI
-        ticketsADT tickets = createTicketADT(argc, argv, MAX_INFRACTION_CHI, MAX_AGENCY_CHI, LONG_PATENTE);
-    #elif NYC 
-        ticketsADT tickets = createTicketADT(argc, argv, MAX_INFRACTION_NYC, MAX_AGENCY_NYC, LONG_PATENTE);
-    #else
-        fprintf(stderr, "Debe compilar con -D$(CIUDAD)\n");
-        exit(1);
-    #endif
+    ticketsADT tickets = createTicketADT(argc, argv, MAX_INFRACTION, MAX_AGENCY, LONG_PATENTE);
+
 
     // Primera parte: Leo argv[2], el cual será el archivo csv donde guardo infracciones con su respectivo id
     // Formarto: id;descripcion
@@ -31,11 +37,7 @@ int main(int argc, char *argv[]) {
     // Formarto: issueDate;plateRedacted;unitDescription;infrId;fineLevel1Amount
     FILE *file_tickets = openFile(argv[1]);
 
-    #ifdef CHI
-        loadWithBlocks(tickets, file_tickets, processBufferTicketsCHI);
-    #elif NYC
-        loadWithBlocks(tickets, file_tickets, processBufferTicketsNYC);
-    #endif
+    loadWithBlocks(tickets, file_tickets, proocessBufferTickets);
 
     fclose(file_tickets);
 
