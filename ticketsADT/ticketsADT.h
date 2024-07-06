@@ -37,7 +37,7 @@ typedef struct infractionPlateByAlpha {
 
 typedef struct year {
   size_t year;
-  size_t top[3];
+  char top[3];
 } tYear;
 
 /* Crea una nueva estructura donde se van a guardar los tickets.

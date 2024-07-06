@@ -30,6 +30,7 @@ void toBeginPlateByAlpha(ticketsADT tickets) {
   if (tickets->firstByAlpha == NULL) {
     orderTicketsByAlpha(tickets);
   }
+
   tickets->currentByAlpha = tickets->firstByAlpha;
 }
 
@@ -39,12 +40,14 @@ int hasNextPlateByAlpha(ticketsADT tickets) {
 
 tInfractionPlateByAlpha nextPlateByAlpha(ticketsADT tickets) {
   tInfractionPlateByAlpha infr;
+  
   if (!hasNextPlateByAlpha(tickets)) {
     infr.description = NULL;
     infr.plate = NULL;
     infr.amount = 0;
     return infr;
   }
+
   tInfractionNode *current = tickets->currentByAlpha;
   infr.description = current->description;
   infr.plate = current->maxPlate;

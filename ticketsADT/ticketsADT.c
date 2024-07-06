@@ -7,10 +7,14 @@
 #include <string.h>
 #include <stdlib.h>
 
-// #include "insertTicket.c"
-// #include "iteratorByAmount.c"
-// #include "iteratorPlateByAlpha.c"
+#include "insertTicket.c"
+#include "iteratorByAmount.c"
+#include "agencyIterator.c"
+#include "iteratorPlateByAlpha.c"
 
+static void getMonths(size_t * year , char* firstMonth, char* secondMonth, char* thirdMonth);
+static void freeAgencies(tAgencyList agencies);
+static void freeInfraction(tInfractionNode * infrNode);
 
 ticketsADT newTickets(size_t beginYear, size_t endYear, size_t descLength, size_t agencyLength, size_t plateLength) {
   errno = 0;
@@ -69,76 +73,77 @@ int insertInfraction(tInfraction infraction, ticketsADT tickets) {
   return 1;
 }
 
-typedef struct month {
-  char month;
-  size_t amount;
-} month;
-
-
-static void getTop3MonthAux(size_t * year , month * first, month * second, month * third){
-
+static void getMonths(size_t * year , char* firstMonth, char* secondMonth, char* thirdMonth){
+  size_t firstAmount = 0, secondAmount = 0, thirdAmount = 0;
+  *firstMonth = *secondMonth = *thirdMonth = 0;
   for (int i=0 ; i < N_MONTH ; i++){
-
-    if (year[i] > first->amount){
-      *third=*second;
-      *second=*first;
-      first->amount=year[i];
-      first->month=i+1;
+    if (year[i] > firstAmount){
+      thirdAmount = secondAmount;
+      *thirdMonth = *secondMonth;
+      secondAmount = firstAmount;
+      *secondMonth = *firstMonth;
+      firstAmount = year[i];
+      *firstMonth = i + 1;
     }
-    else if (year[i] > second->amount){
-      *third=*second;
-      second->amount=year[i];
-      second->month=i+1;
+    else if (year[i] > secondAmount){
+      thirdAmount = secondAmount;
+      *thirdMonth = *secondMonth;
+      secondAmount = year[i];
+      *secondMonth = i + 1;
     }
-    else if (year[i] > third->amount){
-      third->amount=year[i];
-      third->month=i+1;
+    else if (year[i] > thirdAmount){
+      thirdAmount = year[i];
+      *thirdMonth= i + 1;
     }
-
   }
-
 }
 
 tYear * getTop3Month(ticketsADT tickets, size_t * amountYears){
-  month first={0,0}, second={0,0}, third={0,0}, reset={0,0};
+  int j = 0, yearsRange = tickets->endYear - tickets->beginYear + 1;
 
-  int yearsRange=tickets->endYear - tickets->beginYear + 1, i=0, j=0;
-
-  errno=0;
-  tYear * arr=malloc(yearsRange * sizeof(*arr)); 
+  errno = 0;
+  tYear *arr = malloc(yearsRange * sizeof(*arr)); 
   if (arr == NULL || errno ==  ENOMEM){
     return NULL;
   }
 
-  for (; i < yearsRange ; i++){
-
-    getTop3MonthAux(tickets->years[i], &first, &second, &third);
-
-    if (first.month || second.month || third.month){
-      arr[j].year=i + tickets->beginYear;
-      arr[j].top[0]=first.month;
-      arr[j].top[1]=second.month;
-      arr[j++].top[2]=third.month;
-      first=second=third=reset;
+  for (int i = 0; i < yearsRange ; i++){
+    getMonths(tickets->years[i], (arr[j].top + 0), (arr[j].top + 1), (arr[j].top + 2));
+    if (arr[j].top[0] != 0) {
+      arr[j++].year = i + tickets->beginYear;
     }
+
   }
 
-  *amountYears=j; //ACA NOSE SI ESTO DEBERIA IR ACA O ABAJO
   arr=realloc(arr, j * sizeof(*arr));
   if (arr == NULL || errno ==  ENOMEM){
-    //ACA NOSE SI DEBERIA AGREGAR UN FREE(ARR)
     return NULL;
   }
+  *amountYears = j;
 
   return arr;
 }
 
-static void freeAgenciesRec(tAgencyList agencies){
+void freeTickets(ticketsADT tickets){
+  free(tickets->years);
+
+  for (int i=0 ; i < tickets->infractionsDim ; i++){
+    freeInfraction(&tickets->infractions[i]);
+  }
+
+  free(tickets->infractions);
+
+  freeAgencies(tickets->agencies);
+
+  free(tickets);
+}
+
+static void freeAgencies(tAgencyList agencies){
   if (agencies == NULL){
     return;
   }
 
-  freeAgenciesRec(agencies->nextAgency);
+  freeAgencies(agencies->nextAgency);
 
   free(agencies->inf);
   free(agencies->name);
@@ -154,16 +159,3 @@ static void freeInfraction(tInfractionNode * infrNode){
   freeTree(infrNode->plateTree);
 }
 
-void freeTickets(ticketsADT tickets){
-  free(tickets->years);
-
-  for (int i=0 ; i < tickets->infractionsDim ; i++){
-    freeInfraction(&tickets->infractions[i]);
-  }
-
-  free(tickets->infractions);
-
-  freeAgenciesRec(tickets->agencies);
-
-  free(tickets);
-}
