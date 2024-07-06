@@ -55,7 +55,9 @@ tPlateTree insertToPlateTree(tPlateTree plateTree, char *plate, size_t plateLeng
 
   // Caso Izquierda Derecha
   if (balance > 1 && cmpLeft < 0) {
-    plateTree->left = rotateLeft(plateTree->left);
+    if (plateTree->left->right != NULL) {
+      plateTree->left = rotateLeft(plateTree->left);
+    }
     return rotateRight(plateTree);
   }
 
@@ -66,7 +68,9 @@ tPlateTree insertToPlateTree(tPlateTree plateTree, char *plate, size_t plateLeng
 
   // Caso Derecha Izquierda
   if (balance < -1 && cmpRight > 0) {
-    plateTree->right = rotateRight(plateTree->right);
+    if (plateTree->right->left != NULL) {
+      plateTree->right = rotateRight(plateTree->right);
+    }
     return rotateLeft(plateTree);
   }
 
@@ -90,36 +94,30 @@ int getBalance(tPlateNode *node) {
 
 tPlateNode *rotateRight(tPlateNode *node) {
   tPlateNode *left = node->left;
-  if (left != NULL) {
-    tPlateNode *subRight = left->right;
+  tPlateNode *subRight = left->right;
 
-    left->right = node;
-    node->left = subRight;
+  left->right = node;
+  node->left = subRight;
 
-    node->height = MAX(height(node->left), height(node->right)) + 1;
-    left->height = MAX(height(left->left), height(left->right)) + 1;
+  node->height = MAX(height(node->left), height(node->right)) + 1;
+  left->height = MAX(height(left->left), height(left->right)) + 1;
 
-    // retorno la nueva raiz
-    return left;
-  }
-  return node;
+  // retorno la nueva raiz
+  return left;
 }
 
 tPlateNode *rotateLeft(tPlateNode *node) {
   tPlateNode *right = node->right;
-  if (right != NULL) {
-    tPlateNode *subLeft = right->left;
+  tPlateNode *subLeft = right->left;
 
-    right->left = node;
-    node->right = subLeft;
+  right->left = node;
+  node->right = subLeft;
 
-    node->height = MAX(height(node->left), height(node->right)) + 1;
-    right->height = MAX(height(right->left), height(right->right)) + 1;
+  node->height = MAX(height(node->left), height(node->right)) + 1;
+  right->height = MAX(height(right->left), height(right->right)) + 1;
 
-    // retorno la nueva raiz
-    return right;
-  }
-  return node;
+  // retorno la nueva raiz
+  return right;
 }
 
 // Función para liberar la memoria del árbol
