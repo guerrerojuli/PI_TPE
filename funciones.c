@@ -4,8 +4,7 @@
 #include <time.h>
 #include <ctype.h>
 #include <errno.h>
-#include "ticketsADT.h"
-#define MAX_MONTHS 12 // podrian utilizarse los 6 primeros
+#include "ticketsADT/ticketsADT.h"
 #define MAX_LINE_LENGTH 256
 #define START_YEAR 1900
 #define SUCCESS 0
@@ -85,16 +84,18 @@ ticketsADT createTicketADT(int argc, char *argv[], size_t max_description, size_
 
 void processBufferInfractions(char buffer[], ticketsADT tickets) {
     tInfraction infr_aux; // Estructura donde iré guardando los datos de cada infracción
+    char descAux[51];
     char id_aux[MAX_LONG_INT];
     char* token = strtok(buffer, "\n");
     while ( token != NULL ) {
-        sscanf(token, "%[^;];%[^\n]\n", id_aux, infr_aux.description);
+        sscanf(token, "%[^;];%[^\n]\n", id_aux, descAux);
         infr_aux.id = atoi(id_aux);
+        infr_aux.description = descAux;
         errno = 0;
         insertInfraction(infr_aux, tickets);
         if ( errno == ENOMEM ) {
             fprintf(stderr, "Error al cargar datos del archivo de infracciones por falta de memoria.\n");
-            return ERROR;
+            exit(ERROR);
         }
         token = strtok(NULL, "\n");
     }
@@ -105,10 +106,10 @@ void processBufferTicketsCHI(char buffer[], ticketsADT tickets) {
     char id_aux[MAX_LONG_INT];
     char year_aux[MAX_LONG_INT];
     char month_aux[MAX_LONG_INT];
-    char agency_aux[MAX_AGENCY_CHI];
+    char agency_aux[MAX_AGENCY_CHI + 1];
     char* token = strtok(buffer, "\n");
     while ( token != NULL ) {
-        sscanf(token, "%[^-]-%[^-]-%*[^;];%[^;];%[^;];%[^;];%*[^\n]\n", year_aux, month_aux, ticket_aux.patente, agency_aux, id_aux);
+        sscanf(token, "%[^-]-%[^-]-%*[^;];%[^;];%[^;];%[^;];%*[^\n]\n", year_aux, month_aux, ticket_aux.plate, agency_aux, id_aux);
         ticket_aux.id = atoi(id_aux);
         ticket_aux.year = atoi(year_aux);
         ticket_aux.month = (char)atoi(month_aux);
@@ -117,7 +118,7 @@ void processBufferTicketsCHI(char buffer[], ticketsADT tickets) {
         insertTicket(ticket_aux, tickets);
         if ( errno == ENOMEM ) {
             fprintf(stderr, "Error al cargar datos del archivo de tickets por falta de memoria.\n");
-            return ERROR;
+            exit(ERROR);
         }
         token = strtok(NULL, "\n");
     }
@@ -128,10 +129,10 @@ void processBufferTicketsNYC(char buffer[], ticketsADT tickets) {
     char year_aux[MAX_LONG_INT];
     char month_aux[MAX_LONG_INT];
     char id_aux[MAX_LONG_INT];
-    char agency_aux[MAX_INFRACTION_NYC];
+    char agency_aux[MAX_AGENCY_NYC + 1];
     char* token = strtok(buffer, "\n");
     while ( token != NULL ) {
-        sscanf(token, "%[^;];%[^-]-%[^-]-%*[^;];%[^;];%*[^;];[^\n]\n", ticket_aux.patente, year_aux, month_aux, id_aux, agency_aux);
+        sscanf(token, "%[^;];%[^-]-%[^-]-%*[^;];%[^;];%*[^;];%[^\n]\n", ticket_aux.plate, year_aux, month_aux, id_aux, agency_aux);
         ticket_aux.id = atoi(id_aux);
         ticket_aux.year = atoi(year_aux);
         ticket_aux.month = (char) atoi(month_aux);
@@ -140,7 +141,7 @@ void processBufferTicketsNYC(char buffer[], ticketsADT tickets) {
         insertTicket(ticket_aux, tickets);
         if ( errno == ENOMEM ) {
             fprintf(stderr, "Error al cargar datos del archivo de tickets por falta de memoria.\n");
-            return ERROR;
+            exit(ERROR);
         }
         token = strtok(NULL, "\n");
     }

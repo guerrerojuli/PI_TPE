@@ -10,7 +10,7 @@ typedef struct ticket {
   char *agency;
   size_t year;
   char month;
-  char plate[10];
+  char plate[11];
 } tTicket;
 
 typedef struct infraction {

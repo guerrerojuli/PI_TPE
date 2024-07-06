@@ -109,7 +109,7 @@ tYear * getTop3Month(ticketsADT tickets, size_t * amountYears){
 
   for (int i = 0; i < yearsRange ; i++){
     getMonths(tickets->years[i], (arr[j].top + 0), (arr[j].top + 1), (arr[j].top + 2));
-    if (arr[j].top[0] != 0) {
+    if (j != 0 || arr[j].top[0] != 0) {
       arr[j++].year = i + tickets->beginYear;
     }
 

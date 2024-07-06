@@ -1,18 +1,16 @@
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
-#include "./ticketsADT.h"
-#include "./funciones.c"
+#include "ticketsADT/ticketsADT.h"
+#include "queries.c"
+#include "funciones.c"
 
 #ifdef CHI
     #define MAX_INFRACTION MAX_INFRACTION_CHI
     #define MAX_AGENCY MAX_AGENCY_CHI
-    #define proocessBufferTickets(x,y) processBufferTicketsCHI(x,y)
+    #define processBufferTickets processBufferTicketsCHI
 #elif NYC
     #define MAX_INFRACTION MAX_INFRACTION_NYC
     #define MAX_AGENCY MAX_AGENCY_NYC
-    #define proocessBufferTickets(x,y) processBufferTicketsNYC(x,y)
+    #define processBufferTickets processBufferTicketsNYC
 #else
     #error "Debe compilar con -D$(CIUDAD)"
 #endif
@@ -37,7 +35,7 @@ int main(int argc, char *argv[]) {
     // Formarto: issueDate;plateRedacted;unitDescription;infrId;fineLevel1Amount
     FILE *file_tickets = openFile(argv[1]);
 
-    loadWithBlocks(tickets, file_tickets, proocessBufferTickets);
+    loadWithBlocks(tickets, file_tickets, processBufferTickets);
 
     fclose(file_tickets);
 
