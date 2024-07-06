@@ -90,29 +90,33 @@ int getBalance(tPlateNode *node) {
 
 tPlateNode *rotateRight(tPlateNode *node) {
   tPlateNode *left = node->left;
-  tPlateNode *subRight = left->right;
+  if (left != NULL) {
+    tPlateNode *subRight = left->right;
 
-  left->right = node;
-  node->left = subRight;
+    left->right = node;
+    node->left = subRight;
 
-  node->height = MAX(height(node->left), height(node->right)) + 1;
-  left->height = MAX(height(left->left), height(left->right)) + 1;
+    node->height = MAX(height(node->left), height(node->right)) + 1;
+    left->height = MAX(height(left->left), height(left->right)) + 1;
 
-  // retorno la nueva raiz
+    // retorno la nueva raiz
+  }
   return left;
 }
 
 tPlateNode *rotateLeft(tPlateNode *node) {
   tPlateNode *right = node->right;
-  tPlateNode *subLeft = right->left;
+  if (right != NULL) {
+    tPlateNode *subLeft = right->left;
 
-  right->left = node;
-  node->right = subLeft;
+    right->left = node;
+    node->right = subLeft;
 
-  node->height = MAX(height(node->left), height(node->right)) + 1;
-  right->height = MAX(height(right->left), height(right->right)) + 1;
+    node->height = MAX(height(node->left), height(node->right)) + 1;
+    right->height = MAX(height(right->left), height(right->right)) + 1;
 
-  // retorno la nueva raiz
+    // retorno la nueva raiz
+  }
   return right;
 }
 
