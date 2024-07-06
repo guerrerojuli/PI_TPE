@@ -14,8 +14,11 @@ int main(int argc, char *argv[]) {
     // Creo mi ADT, en el cual guardaré los datos
     #ifdef CHI
         ticketsADT tickets = createTicketADT(argc, argv, MAX_INFRACTION_CHI, MAX_AGENCY_CHI, LONG_PATENTE);
-    #else   
+    #elif NYC 
         ticketsADT tickets = createTicketADT(argc, argv, MAX_INFRACTION_NYC, MAX_AGENCY_NYC, LONG_PATENTE);
+    #else
+        fprintf(stderr, "Debe compilar con -D$(CIUDAD)\n");
+        exit(1);
     #endif
 
     // Primera parte: Leo argv[2], el cual será el archivo csv donde guardo infracciones con su respectivo id
@@ -30,7 +33,7 @@ int main(int argc, char *argv[]) {
 
     #ifdef CHI
         loadWithBlocks(tickets, file_tickets, processBufferTicketsCHI);
-    #else
+    #elif NYC
         loadWithBlocks(tickets, file_tickets, processBufferTicketsNYC);
     #endif
 
