@@ -1,6 +1,7 @@
 // Archivo donde guardamos las implementaciones viejas de ciertas funciones
 #include "ticketsADT.h"
 #include "funciones.c"
+#define TICKETS_FIELDS 5
 
 void loadInfractions(ticketsADT tickets, FILE *file_infr, char* delimiters, char buffer_line[]) {
     tInfraction infr_aux; // Estructura donde iré guardando los datos de cada infracción a medida que leo el archivo
@@ -11,7 +12,7 @@ void loadInfractions(ticketsADT tickets, FILE *file_infr, char* delimiters, char
         // Al mandar la descripcion, el CDT por atrás ya hace la copia. En el proximo bucle, se pisa
         // buffer_line pero no interesa, ya que en el cdt vos tenes la copia
         insertInfraction(infr_aux, tickets);
-        if ( ERRNO == ENOMEM ) {
+        if ( errno == ENOMEM ) {
             fprintf(stderr, "Error al cargar datos del archivo de infracciones por falta de memoria.\n");
             return ERROR;
         }
@@ -31,7 +32,7 @@ void loadTicketsCHI(ticketsADT ticketsCHI, FILE *file_tickets, char* delimiters,
         ticket_aux.id = atoi(strtok(NULL, delimiters));
         strtok(NULL, delimiters); // No me interesa el monto
         insertTicket(ticket_aux, ticketsCHI);
-        if ( ERRNO == ENOMEM ) {
+        if ( errno == ENOMEM ) {
             fprintf(stderr, "Error al cargar datos del archivo de multas por falta de memoria.\n");
             return ERROR;
         }
@@ -88,4 +89,50 @@ void loadTicketsNYC2(ticketsADT ticketsNYC, FILE *file_tickets){
         ticket_aux.agency = agency_ascii;
         insertTicket(ticket_aux, ticketsNYC);
     }
+}
+
+void query1_old(ticketsADT tickets) {
+    FILE *query1 = createQueryFile("./query1.csv");
+    fprintf(query1, "infraction;tickets\n"); // Primera linea
+    toBeginByAmount(tickets);
+    while ( hasNextByAmount(tickets) ) {
+        tInfractionByAmount aux = nextByAmount(tickets);
+        fprintf(query1, "%s;%d\n", aux.description, aux.amount);
+    }
+    fclose(query1);
+}
+
+void query2_old(ticketsADT tickets) {
+    FILE *query2 = createQueryFile("./query2.csv");
+    fprintf(query2, "issuingAgency;infraction;tickets\n");
+    toBeginByAgency(tickets);
+    while ( hasNextByAmount(tickets) ) {
+        tAgency aux = nextByAgency(tickets);
+        fprintf(query2, "%s;%s;%d\n", aux.name, aux.infractionDesc, aux.amount);
+    }
+    fclose(query2);
+}
+
+void query3_old(ticketsADT tickets) {
+    FILE *query3 = createQueryFile("./query3.csv");
+    fprintf(query3, "infraction;plate;tickets\n");
+    toBeginPlateByAlpha(tickets);
+    while ( hasNextPlateByAlpha(tickets) ) {
+        tInfractionPlateByAlpha aux = nextPlateByAlpha(tickets);
+        fprintf(query3, "%s;%s;%d\n", aux.description, aux.plate, aux.amount);
+    }
+    fclose(query3);
+}
+
+void query4_old(ticketsADT tickets) {
+    FILE *query4 = createQueryFile("./query4.csv");
+    fprintf(query4, "year;ticketsTop1Month;ticketsTop2Month;ticketsTop3Month\n");
+    int dim;
+    tYear *resp = getTop3Month(tickets, &dim);
+    static char *months[MAX_MONTHS] = {"Empty", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+    for (int i = 0; i < dim; i++) {
+        fprintf(query4, "%d;%s;%s;%s\n", resp[i].year, months[resp[i].top[0]], months[resp[i].top[1]], months[resp[i].top[2]]);
+    }
+    fclose(query4);
+    free(resp);
 }

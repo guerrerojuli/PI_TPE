@@ -12,20 +12,16 @@ int main(int argc, char *argv[]) {
     }
 
     // Creo mi ADT, en el cual guardaré los datos
-
     #ifdef CHI
         ticketsADT tickets = createTicketADT(argc, argv, MAX_INFRACTION_CHI, MAX_AGENCY_CHI, LONG_PATENTE);
     #else   
         ticketsADT tickets = createTicketADT(argc, argv, MAX_INFRACTION_NYC, MAX_AGENCY_NYC, LONG_PATENTE);
     #endif
 
-    char* delimiters = ";\n"; // Delimitadores para strtok
-    char buffer_line[MAX_LINE_LENGTH]; // Buffer donde voy guardando los strings que retorna de strtok
-
     // Primera parte: Leo argv[2], el cual será el archivo csv donde guardo infracciones con su respectivo id
     // Formarto: id;descripcion
     FILE *file_infr = openFile(argv[2]);
-    loadInfractions(tickets, file_infr, delimiters, buffer_line);
+    loadWithBlocks(tickets, file_infr, processBufferInfractions);
     fclose(file_infr);
 
     // Segunda parte: Leo argv[1], el cual será el archivo csv donde guardo multas
@@ -33,9 +29,9 @@ int main(int argc, char *argv[]) {
     FILE *file_tickets = openFile(argv[1]);
 
     #ifdef CHI
-        loadTicketsCHI(tickets, file_tickets, delimiters, buffer_line);
+        loadWithBlocks(tickets, file_tickets, processBufferTicketsCHI);
     #else
-        loadTicketsNYC(tickets, file_tickets, delimiters, buffer_line);
+        loadWithBlocks(tickets, file_tickets, processBufferTicketsNYC);
     #endif
 
     fclose(file_tickets);

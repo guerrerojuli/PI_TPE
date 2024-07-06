@@ -1,5 +1,15 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "ticketsADT.h"
-#include "funciones.c"
+
+static FILE *createQueryFile(char* name) {
+    FILE *res = fopen(name, "w");
+    if ( res == NULL ) {
+        fprintf(stderr, "Error al crear el archivo: %s\nPuede provenir por falta de memoria.\n", name);
+        exit(1);
+    }
+    return res;
+}
 
 void query1(ticketsADT tickets) {
     FILE *query1 = createQueryFile("./query1.csv");

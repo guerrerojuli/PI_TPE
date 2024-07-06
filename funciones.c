@@ -10,15 +10,14 @@
 #define START_YEAR 1900
 #define SUCCESS 0
 #define ERROR 1
-#define ERRNO 0
-#define MAX_INFRACTION_NYC 31 // cuento el 0
-#define MAX_AGENCY_NYC 36 // cuento el 0
-#define TICKETS_FIELDS 5
 #define MAX_LONG_INT 11 // Maxima cantidad de caracteres de un int y el cero final
-#define LONG_PATENTE 11
-#define MAX_INFRACTION_CHI 51 // cuento el 0
-#define MAX_AGENCY_CHI 14 // cuento el 0
-#define BUFFER_SIZE 65536 // 2^16
+// El 0 final lo cuentan desde el backend
+#define MAX_INFRACTION_NYC 30
+#define MAX_AGENCY_NYC 35
+#define LONG_PATENTE 10
+#define MAX_INFRACTION_CHI 50
+#define MAX_AGENCY_CHI 13
+#define BUFFER_SIZE 16384 // 16 KB
 
 // Archivo en el cual guardamos las funciones auxiliares utilizadas en el main de CHICAGO y NYC análogamente
 FILE *openFile(char* arg) {
@@ -81,7 +80,6 @@ ticketsADT createTicketADT(int argc, char *argv[], size_t max_description, size_
             tickets = newTickets(beginYear, endYear, max_description, max_agency_name, long_patente);
         }       
     }
-
     return tickets;
 }
 
@@ -92,8 +90,9 @@ void processBufferInfractions(char buffer[], ticketsADT tickets) {
     while ( token != NULL ) {
         sscanf(token, "%[^;];%[^\n]\n", id_aux, infr_aux.description);
         infr_aux.id = atoi(id_aux);
+        errno = 0;
         insertInfraction(infr_aux, tickets);
-        if ( ERRNO == ENOMEM ) {
+        if ( errno == ENOMEM ) {
             fprintf(stderr, "Error al cargar datos del archivo de infracciones por falta de memoria.\n");
             return ERROR;
         }
@@ -114,9 +113,10 @@ void processBufferTicketsCHI(char buffer[], ticketsADT tickets) {
         ticket_aux.year = atoi(year_aux);
         ticket_aux.month = (char)atoi(month_aux);
         ticket_aux.agency = agency_aux;
+        errno = 0;
         insertTicket(ticket_aux, tickets);
-        if ( ERRNO == ENOMEM ) {
-            fprintf(stderr, "Error al cargar datos del archivo de infracciones por falta de memoria.\n");
+        if ( errno == ENOMEM ) {
+            fprintf(stderr, "Error al cargar datos del archivo de tickets por falta de memoria.\n");
             return ERROR;
         }
         token = strtok(NULL, "\n");
@@ -136,9 +136,10 @@ void processBufferTicketsNYC(char buffer[], ticketsADT tickets) {
         ticket_aux.year = atoi(year_aux);
         ticket_aux.month = (char) atoi(month_aux);
         ticket_aux.agency = agency_aux;
+        errno = 0;
         insertTicket(ticket_aux, tickets);
-        if ( ERRNO == ENOMEM ) {
-            fprintf(stderr, "Error al cargar datos del archivo de infracciones por falta de memoria.\n");
+        if ( errno == ENOMEM ) {
+            fprintf(stderr, "Error al cargar datos del archivo de tickets por falta de memoria.\n");
             return ERROR;
         }
         token = strtok(NULL, "\n");
@@ -146,8 +147,9 @@ void processBufferTicketsNYC(char buffer[], ticketsADT tickets) {
 }
 
 // Función optimizada, en vez de leer línea por línea, traigo de a chunks de memoria del archivo ya que es 
-// muy costoso la lectura de archivos desde el disco duro. Proceso el bloque en una funcion auxiliar
-void loadInfractionsWithBlocks(ticketsADT tickets, FILE *file_infr) {
+// muy costoso la lectura de archivos desde el disco duro. Proceso el bloque en una funcion auxiliar.
+// La funcion es analoga para infracciones y tickets, por eso le pasamos un puntero a funcion
+void loadWithBlocks(ticketsADT tickets, FILE *file_infr, void (*fn)(char[], ticketsADT) ) {
     fscanf(file_infr, "%*[^\n]\n"); // Sacamos los nombre de los campos de la primer línea
     size_t bytesRead; // Cantidad de bytes leidos por fread, si es menor al pedido significa que llegue al final del archivo
     char buffer[BUFFER_SIZE + 1]; // Iré guardando el boque traido del archivo acá
@@ -159,7 +161,7 @@ void loadInfractionsWithBlocks(ticketsADT tickets, FILE *file_infr) {
             char* lastLine = strrchr(buffer, '\n'); // Será el puntero al ultimo caracter de mi buffer, elimino la linea
             size_t buffer_length = lastLine - buffer;
             buffer[buffer_length] = '\0'; // Piso el \n por \0, strtok me reconoce el final
-            processBufferInfractions(buffer, tickets);
+            fn(buffer, tickets);
             buffer_pointer = buffer + buffer_length + 1;
             strcpy(buffer, buffer_pointer);
             temp_length = strlen(buffer);
@@ -168,62 +170,7 @@ void loadInfractionsWithBlocks(ticketsADT tickets, FILE *file_infr) {
         else { // Si estoy al final del archivo, agrego un \n al final de la linea final y pongo el 0 final
             buffer[bytesRead + temp_length] = '\n';
             buffer[bytesRead + temp_length + 1] = '\0';
-            processBufferInfractions(buffer, tickets);
+            fn(buffer, tickets);
         }
     }
-}
-
-static FILE *createQueryFile(char* name) {
-    FILE *res = fopen(name, "w");
-    if ( res == NULL ) {
-        fprintf(stderr, "Error al crear el archivo: %s\nPuede provenir por falta de memoria.\n", name);
-        exit(1);
-    }
-    return res;
-}
-
-void query1(ticketsADT tickets) {
-    FILE *query1 = createQueryFile("./query1.csv");
-    fprintf(query1, "infraction;tickets\n"); // Primera linea
-    toBeginByAmount(tickets);
-    while ( hasNextByAmount(tickets) ) {
-        tInfractionByAmount aux = nextByAmount(tickets);
-        fprintf(query1, "%s;%d\n", aux.description, aux.amount);
-    }
-    fclose(query1);
-}
-
-void query2(ticketsADT tickets) {
-    FILE *query2 = createQueryFile("./query2.csv");
-    fprintf(query2, "issuingAgency;infraction;tickets\n");
-    toBeginByAgency(tickets);
-    while ( hasNextByAmount(tickets) ) {
-        tAgency aux = nextByAgency(tickets);
-        fprintf(query2, "%s;%s;%d\n", aux.name, aux.infractionDesc, aux.amount);
-    }
-    fclose(query2);
-}
-
-void query3(ticketsADT tickets) {
-    FILE *query3 = createQueryFile("./query3.csv");
-    fprintf(query3, "infraction;plate;tickets\n");
-    toBeginPlateByAlpha(tickets);
-    while ( hasNextPlateByAlpha(tickets) ) {
-        tInfractionPlateByAlpha aux = nextPlateByAlpha(tickets);
-        fprintf(query3, "%s;%s;%d\n", aux.description, aux.plate, aux.amount);
-    }
-    fclose(query3);
-}
-
-void query4(ticketsADT tickets) {
-    FILE *query4 = createQueryFile("./query4.csv");
-    fprintf(query4, "year;ticketsTop1Month;ticketsTop2Month;ticketsTop3Month\n");
-    int dim;
-    tYear *resp = getTop3Month(tickets, &dim);
-    static char *months[MAX_MONTHS] = {"Empty", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-    for (int i = 0; i < dim; i++) {
-        fprintf(query4, "%d;%s;%s;%s\n", resp[i].year, months[resp[i].top[0]], months[resp[i].top[1]], months[resp[i].top[2]]);
-    }
-    fclose(query4);
-    free(resp);
 }
