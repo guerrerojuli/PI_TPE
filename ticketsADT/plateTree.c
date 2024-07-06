@@ -100,8 +100,9 @@ tPlateNode *rotateRight(tPlateNode *node) {
     left->height = MAX(height(left->left), height(left->right)) + 1;
 
     // retorno la nueva raiz
+    return left;
   }
-  return left;
+  return node;
 }
 
 tPlateNode *rotateLeft(tPlateNode *node) {
@@ -116,8 +117,9 @@ tPlateNode *rotateLeft(tPlateNode *node) {
     right->height = MAX(height(right->left), height(right->right)) + 1;
 
     // retorno la nueva raiz
+    return right;
   }
-  return right;
+  return node;
 }
 
 // Función para liberar la memoria del árbol
