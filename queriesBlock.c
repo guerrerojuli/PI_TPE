@@ -1,3 +1,6 @@
+#include "ticketsADT.h"
+#include "funciones.c"
+
 void query1(ticketsADT tickets) {
     FILE *query1 = createQueryFile("./query1.csv");
     fprintf(query1, "infraction;tickets\n"); // Primera linea
