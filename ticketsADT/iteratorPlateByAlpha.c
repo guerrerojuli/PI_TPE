@@ -2,29 +2,8 @@
 #include "ticketsADT_internal.h"
 #include <string.h>
 
-static tInfractionNode *orderTicketsByAlphaRec(tInfractionNode *infrNode, tInfractionNode *infraction) {
-  if (infrNode == NULL) {
-    return infraction;
-  }
-
-  if (strcmp(infrNode->description, infraction->description) > 0) {
-    infraction->nextByAlpha = infrNode;
-    return infraction;
-  }
-
-  infrNode->nextByAlpha = orderTicketsByAlphaRec(infrNode->nextByAlpha, infraction);
-  return infrNode;
-}
-
-static void orderTicketsByAlpha (ticketsADT tickets){
-    for (int i=0 ; i < tickets->infractionsDim ; i++){
-
-      if (tickets->infractions[i].description != NULL){
-        tickets->firstByAlpha = orderTicketsByAlphaRec(tickets->firstByAlpha, &tickets->infractions[i]);
-      }
-
-    }
-}
+static tInfractionNode *orderTicketsByAlphaRec(tInfractionNode *infrNode, tInfractionNode *infraction);
+static void orderTicketsByAlpha (ticketsADT tickets);
 
 void toBeginPlateByAlpha(ticketsADT tickets) {
   if (tickets->firstByAlpha == NULL) {
@@ -54,4 +33,28 @@ tInfractionPlateByAlpha nextPlateByAlpha(ticketsADT tickets) {
   infr.amount = current->plateAmount;
   tickets->currentByAlpha = current->nextByAlpha;
   return infr;
+}
+
+static tInfractionNode *orderTicketsByAlphaRec(tInfractionNode *infrNode, tInfractionNode *infraction) {
+  if (infrNode == NULL) {
+    return infraction;
+  }
+
+  if (strcmp(infrNode->description, infraction->description) > 0) {
+    infraction->nextByAlpha = infrNode;
+    return infraction;
+  }
+
+  infrNode->nextByAlpha = orderTicketsByAlphaRec(infrNode->nextByAlpha, infraction);
+  return infrNode;
+}
+
+static void orderTicketsByAlpha (ticketsADT tickets){
+    for (int i=0 ; i < tickets->infractionsDim ; i++){
+
+      if (tickets->infractions[i].description != NULL){
+        tickets->firstByAlpha = orderTicketsByAlphaRec(tickets->firstByAlpha, &tickets->infractions[i]);
+      }
+
+    }
 }
