@@ -41,7 +41,7 @@ typedef struct year {
   size_t top[3];
 } tYear;
 
-ticketsADT newTickets(size_t beginYear, size_t endYear, size_t max_description, size_t max_agency_name);
+ticketsADT newTickets(size_t beginYear, size_t endYear, size_t max_description, size_t max_agency_name, size_t long_patente);
 
 /* Vincula el id con la descripcion de la infraccion. 
 ** Retorna 0 si el id ya estaba vinculado a una descripcion (no lo inserta).
