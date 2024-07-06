@@ -65,24 +65,53 @@ int insertTicket(tTicket ticket, ticketsADT tickets);
 */
 void toBeginByAmount(ticketsADT tickets);
 
+/* Verifica si hay más infracciones en la lista ordenada por cantidad.
+** Retorna 1 si hay más infracciones, 0 en caso contrario.
+*/
 int hasNextByAmount(ticketsADT tickets);
 
+/* Retorna la siguiente infracción en la lista ordenada por cantidad.
+** La estructura retornada incluye la descripción y la cantidad de multas.
+*/
 tInfractionByAmount nextByAmount(ticketsADT tickets);
 
+/* Inicializa el iterador para recorrer las agencias.
+** Setea currentAgency en la primera agencia de la lista.
+*/
 void toBeginAgency(ticketsADT tickets);
 
+/* Verifica si hay más agencias en la lista.
+** Retorna 1 si hay más agencias, 0 en caso contrario.
+*/
 int hasNextAgency(ticketsADT tickets);
 
+/* Retorna la siguiente agencia en la lista.
+** La estructura retornada incluye el nombre de la agencia, 
+** la descripción de la infracción más común y la cantidad de dicha infracción.
+*/
 tAgency nextAgency(ticketsADT tickets);
 
+/* Inicializa el iterador para recorrer las infracciones por orden alfabético.
+** Setea currentByAlpha en la primera infracción de la lista.
+*/
 void toBeginPlateByAlpha(ticketsADT tickets);
 
+/* Verifica si hay más infracciones en la lista ordenada alfabéticamente.
+** Retorna 1 si hay más infracciones, 0 en caso contrario.
+*/
 int hasNextPlateByAlpha(ticketsADT tickets);
 
+/* Retorna la siguiente infracción en la lista ordenada alfabéticamente.
+** La estructura retornada incluye la descripción de la infracción, 
+** la placa del vehículo y la cantidad de dicha infracción.
+*/
 tInfractionPlateByAlpha nextPlateByAlpha(ticketsADT tickets);
 
-/* Devuelve un arreglo (de tYear) en orden creciente que en cada posicion tiene el anio con los tres meses con mas multas (si menos de tres meses tienen multas devuelve en lugar de un numero de un mes el numero cero)
-** amountYears es un parametro de entrada/salida donde se va a guardar la cantidad de anios para los cuales se van a registrar los tres meses con mas multas
+/* Devuelve un arreglo (de tYear) en orden creciente (por anio) que en cada posicion tiene el anio 
+** con los tres meses con más multas (si menos de tres meses tienen multas devuelve 
+** en lugar de un número de un mes el número cero).
+** amountYears es un parámetro de entrada/salida donde se va a guardar la cantidad 
+** de años para los cuales se registraron los tres meses con más multas.
 */
 tYear * getTop3Month(ticketsADT tickets, size_t * amountYears);
 
