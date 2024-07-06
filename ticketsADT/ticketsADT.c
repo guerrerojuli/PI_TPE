@@ -117,6 +117,7 @@ tYear * getTop3Month(ticketsADT tickets, size_t * amountYears){
 
   arr=realloc(arr, j * sizeof(*arr));
   if (arr == NULL || errno ==  ENOMEM){
+    *amountYears=0;
     return NULL;
   }
   *amountYears = j;
