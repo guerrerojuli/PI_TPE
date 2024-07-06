@@ -3,6 +3,8 @@
 
 #include <stddef.h>
 
+#define MAX(a, b) (((a) < (b)) ? (b) : (a))
+
 /* Retorna una copia de un string
  * Retorna NULL si falla
  */

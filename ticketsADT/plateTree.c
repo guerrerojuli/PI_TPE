@@ -6,8 +6,6 @@
 
 #include <stdio.h>
 
-#define MAX(a, b) (((a) < (b)) ? (b) : (a))
-
 tPlateTree insertToPlateTree(tPlateTree plateTree, char *plate, size_t plateLength, char **maxPlate, size_t *maxPlateAmount) {
   if (plateTree == NULL) {
     errno = 0;
