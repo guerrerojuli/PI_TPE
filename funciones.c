@@ -218,9 +218,9 @@ void query3(ticketsADT tickets) {
 void query4(ticketsADT tickets) {
     FILE *query4 = createQueryFile("./query4.csv");
     fprintf(query4, "year;ticketsTop1Month;ticketsTop2Month;ticketsTop3Month\n");
-    int dim = getYears(tickets);
-    tYear *resp = getTop3Month(tickets);
-    static char *months[MAX_MONTHS] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+    int dim;
+    tYear *resp = getTop3Month(tickets, &dim);
+    static char *months[MAX_MONTHS] = {"Empty", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
     for (int i = 0; i < dim; i++) {
         fprintf(query4, "%d;%s;%s;%s\n", resp[i].year, months[resp[i].top[0]], months[resp[i].top[1]], months[resp[i].top[2]]);
     }
