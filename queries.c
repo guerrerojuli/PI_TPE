@@ -1,20 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ticketsADT/ticketsADT.h"
-
-#define LINEAS 50 // manejo #años #agencias #infracciones. Copio de a 50 lineas al archivo.
-#define MAX_LINE_QUERY4 34 //(4+1+9+1+9+1+9)
-#define MAX_MONTHS 13 // 12 meses + 1 empty
-
-#ifdef CHI
-        #define MAX_LINE_QUERY1 61 //(50+1+10)
-        #define MAX_LINE_QUERY2 75 //(13+1+50+1+10)
-        #define MAX_LINE_QUERY3 72 //(50+1+10+1+10)
-#elif NYC
-        #define MAX_LINE_QUERY1 41 //(30+1+10)
-        #define MAX_LINE_QUERY2 77 //(35+1+30+1+10)
-        #define MAX_LINE_QUERY3 52 //(30+1+10+1+10)
-#endif
+#include "main.h"
 
 static FILE *createQueryFile(char* name) {
     FILE *res = fopen(name, "w");

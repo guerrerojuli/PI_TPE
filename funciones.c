@@ -5,18 +5,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include "ticketsADT/ticketsADT.h"
-#define MAX_LINE_LENGTH 256
-#define START_YEAR 1900
-#define SUCCESS 0
-#define ERROR 1
-#define MAX_LONG_INT 11 // Maxima cantidad de caracteres de un int y el cero final
-// El 0 final lo cuentan desde el backend
-#define MAX_INFRACTION_NYC 30
-#define MAX_AGENCY_NYC 35
-#define LONG_PATENTE 10
-#define MAX_INFRACTION_CHI 50
-#define MAX_AGENCY_CHI 13
-#define BUFFER_SIZE 16384 // 16 KB
+#include "main.h"
 
 // Archivo en el cual guardamos las funciones auxiliares utilizadas en el main de CHICAGO y NYC análogamente
 FILE *openFile(char* arg) {

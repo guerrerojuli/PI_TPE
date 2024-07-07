@@ -1,19 +1,9 @@
 #include <stdio.h>
 #include "ticketsADT/ticketsADT.h"
+#include "main.h"
+
 #include "queries.c"
 #include "funciones.c"
-
-#ifdef CHI
-    #define MAX_INFRACTION MAX_INFRACTION_CHI
-    #define MAX_AGENCY MAX_AGENCY_CHI
-    #define processBufferTickets processBufferTicketsCHI
-#elif NYC
-    #define MAX_INFRACTION MAX_INFRACTION_NYC
-    #define MAX_AGENCY MAX_AGENCY_NYC
-    #define processBufferTickets processBufferTicketsNYC
-#else
-    #error "Debe compilar con -D$(CIUDAD)"
-#endif
 
 int main(int argc, char *argv[]) {
     if ( argc < 3 || argc > 5 ) {
