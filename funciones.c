@@ -95,7 +95,7 @@ void processBufferTicketsCHI(char buffer[], ticketsADT tickets) {
     char id_aux[MAX_LONG_INT];
     char year_aux[MAX_LONG_INT];
     char month_aux[MAX_LONG_INT];
-    char agency_aux[MAX_AGENCY_CHI + 1];
+    char agency_aux[MAX_AGENCY + 1];
     char* token = strtok(buffer, "\n");
     while ( token != NULL ) {
         sscanf(token, "%[^-]-%[^-]-%*[^;];%[^;];%[^;];%[^;];%*[^\n]\n", year_aux, month_aux, ticket_aux.plate, agency_aux, id_aux);
@@ -118,7 +118,7 @@ void processBufferTicketsNYC(char buffer[], ticketsADT tickets) {
     char year_aux[MAX_LONG_INT];
     char month_aux[MAX_LONG_INT];
     char id_aux[MAX_LONG_INT];
-    char agency_aux[MAX_AGENCY_NYC + 1];
+    char agency_aux[MAX_AGENCY + 1];
     char* token = strtok(buffer, "\n");
     while ( token != NULL ) {
         sscanf(token, "%[^;];%[^-]-%[^-]-%*[^;];%[^;];%*[^;];%[^\n]\n", ticket_aux.plate, year_aux, month_aux, id_aux, agency_aux);
