@@ -27,6 +27,52 @@ static int notOnlyNumbers(char *s) {
     return 0;
 }
 
+static int isNumber(char *s) {
+  while (*s){
+    if ( !isdigit(*s) ) {
+        return 0;
+    }
+    s++;
+  }
+  return 1;
+}
+
+static void getYearRange(int argc, char *argv[], int *beginYear, int *endYear) {
+  time_t now = time(NULL);
+  struct tm *local = localtime(&now);
+  int currentYear = local->tm_year + 1900;
+  if (argc == 3) {
+    *beginYear = START_YEAR;
+    *endYear = currentYear;
+    return;
+  }
+  if (!isNumber(argv[3]) || (*beginYear = atoi(argv[3])) < 0){
+    *beginYear = -1;
+    *endYear = -1;
+    return;
+  }
+  if (*beginYear < START_YEAR) {
+    *beginYear = START_YEAR;
+  }
+  if (*beginYear > currentYear){
+    *endYear = *beginYear;
+    return;
+  }
+  if (argc == 4) {
+    *endYear = currentYear;
+    return;
+  }
+  // argc = 5
+  if (!isNumber(argv[4]) || *beginYear > (*endYear = atoi(argv[4])) || endYear < 0){
+    *beginYear = -1;
+    *endYear = -1;
+    return;
+  }
+  if (*endYear > currentYear) {
+    *endYear = currentYear;
+  }
+}
+
 ticketsADT createTicketADT(int argc, char *argv[], size_t max_description, size_t max_agency_name, size_t long_patente) {
     time_t now;
     struct tm *local;
