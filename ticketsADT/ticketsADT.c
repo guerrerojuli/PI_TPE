@@ -26,6 +26,7 @@ ticketsADT newTickets(size_t beginYear, size_t endYear, size_t descLength, size_
   errno = 0;
   tickets->years = calloc((endYear - beginYear + 1), sizeof(*tickets->years));
   if (tickets->years == NULL || errno == ENOMEM) {
+    free(tickets);
     return NULL;
   }
 
@@ -126,6 +127,9 @@ tYear * getTop3Month(ticketsADT tickets, size_t * amountYears){
 }
 
 void freeTickets(ticketsADT tickets){
+  if (tickets == NULL) {
+    return;
+  }
   free(tickets->years);
 
   for (int i=0 ; i < tickets->infractionsDim ; i++){
