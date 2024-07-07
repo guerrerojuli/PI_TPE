@@ -48,17 +48,15 @@ ticketsADT newTickets(size_t beginYear, size_t endYear,size_t descLength, size_t
 
 /* Vincula el id con la descripcion de la infraccion. 
 ** Retorna 0 si el id ya estaba vinculado a una descripcion (no lo inserta).
-** Retorna -1 si falla la asignacion de memoria.
+** Setea errno si falla la asignacion de memoria y retorna -1.
 ** Retorna 1 si lo puedo vincular (lo inserta).
 */
 int insertInfraction(tInfraction infraction, ticketsADT tickets);
 
-/* Inserta un ticket. 
-** Retorna 0 si el id de la infraccion no existe y no lo inserta.
-** Retorna -1 si falla.
-** Retorna 1 si lo pudo insertar.
+/* Inserta un ticket
+** Setea errno si falla
 */
-int insertTicket(tTicket ticket, ticketsADT tickets);
+void insertTicket(tTicket ticket, ticketsADT tickets);
 
 /* Ordena la lista de infracciones en orden descendiente por cantidad de multas
 ** Setea current en first que se va a usar para iterar en la lista

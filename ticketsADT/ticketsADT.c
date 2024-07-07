@@ -52,7 +52,7 @@ int insertInfraction(tInfraction infraction, ticketsADT tickets) {
     tickets->infractionsDim = infraction.id + 1;
   }
 
-  /*Si el id ya tiene vinculado una descripcion retorno 0*/
+  /*Si el id ya tiene vinculado una descripcion para*/
   if (tickets->infractions[infraction.id].description != NULL) {
     return 0;
   }

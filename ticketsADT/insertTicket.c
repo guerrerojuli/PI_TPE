@@ -12,26 +12,24 @@ static void addTicketToYears(size_t (*years)[N_MONTH], size_t year, size_t month
 
 static void addTicketToInfraction(tInfractionNode *infractions, size_t id, char *plate, size_t plateLength);
 
-int insertTicket(tTicket ticket, ticketsADT tickets) {
+void insertTicket(tTicket ticket, ticketsADT tickets) {
   if (ticket.id >= tickets->infractionsDim) {
-    return 0;
+    return;
   }
 
   errno = 0;
   tickets->agencies = addTicketToAgency(tickets->agencies, ticket.agency, ticket.id, tickets->infractionsDim, tickets->agencyLength);
   if (errno == ENOMEM) {
-    return -1;
+    return;
   }
 
   addTicketToYears(tickets->years, ticket.year, ticket.month, tickets->beginYear, tickets->endYear);
 
   errno = 0;
   addTicketToInfraction(tickets->infractions, ticket.id, ticket.plate, tickets->plateLength);
-  if (errno == ENOMEM) {
-    return -1;
-  }
-
-  return 1;
+  // if (errno == ENOMEM) {
+  //   return;
+  // }
 }
 
 /* Funcion auxiliar para a una agencia agregarle una infraccion, en caso de que
