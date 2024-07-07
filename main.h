@@ -19,7 +19,7 @@
 #define MAX_LINE_QUERY1 61 //(50+1+10)
 #define MAX_LINE_QUERY2 75 //(13+1+50+1+10)
 #define MAX_LINE_QUERY3 72 //(50+1+10+1+10)
-#define processBufferTickets processBufferTicketsCHI
+#define processToken processTokenCHI
 
 #elif NYC
 #define MAX_INFRACTION 30
@@ -27,7 +27,7 @@
 #define MAX_LINE_QUERY1 41 //(30+1+10)
 #define MAX_LINE_QUERY2 77 //(35+1+30+1+10)
 #define MAX_LINE_QUERY3 52 //(30+1+10+1+10)
-#define processBufferTickets processBufferTicketsNYC
+#define processToken processTokenNYC
 
 #else
 #error "Debe compilar con -D$(CIUDAD)"
@@ -36,7 +36,7 @@
 #define MAX_LINE_QUERY1 0
 #define MAX_LINE_QUERY2 0
 #define MAX_LINE_QUERY3 0
-#define processBufferTickets processBufferTicketsCHI
+#define processToken processTokenCHI //hay que ver que poner aca
 
 #endif
 
