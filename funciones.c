@@ -118,7 +118,7 @@ tTicket processTokenNYC(char *token) {
   return ticket;
 }
 
-void processBufferTickets(char buffer[], ticketsADT tickets) {
+void processBufferTickets(char *buffer, ticketsADT tickets) {
     char* token = strtok(buffer, "\n");
     while ( token != NULL ) {
       tTicket ticket = processToken(token);
@@ -135,7 +135,7 @@ void processBufferTickets(char buffer[], ticketsADT tickets) {
 // Función optimizada, en vez de leer línea por línea, traigo de a chunks de memoria del archivo ya que es 
 // muy costoso la lectura de archivos desde el disco duro. Proceso el bloque en una funcion auxiliar.
 // La funcion es analoga para infracciones y tickets, por eso le pasamos un puntero a funcion
-void loadWithBlocks(ticketsADT tickets, FILE *file_infr, void (*fn)(char[], ticketsADT) ) {
+void loadWithBlocks(ticketsADT tickets, FILE *file_infr, void (*processBuffer)(char *, ticketsADT) ) {
     fscanf(file_infr, "%*[^\n]\n"); // Sacamos los nombre de los campos de la primer línea
     size_t bytesRead; // Cantidad de bytes leidos por fread, si es menor al pedido significa que llegue al final del archivo
     char buffer[BUFFER_SIZE + 1]; // Iré guardando el boque traido del archivo acá
@@ -147,7 +147,7 @@ void loadWithBlocks(ticketsADT tickets, FILE *file_infr, void (*fn)(char[], tick
             char* lastLine = strrchr(buffer, '\n'); // Será el puntero al ultimo caracter de mi buffer, elimino la linea
             size_t buffer_length = lastLine - buffer;
             buffer[buffer_length] = '\0'; // Piso el \n por \0, strtok me reconoce el final
-            fn(buffer, tickets);
+            processBuffer(buffer, tickets);
             buffer_pointer = buffer + buffer_length + 1;
             strcpy(buffer, buffer_pointer);
             temp_length = strlen(buffer);
@@ -156,7 +156,7 @@ void loadWithBlocks(ticketsADT tickets, FILE *file_infr, void (*fn)(char[], tick
         else { // Si estoy al final del archivo, agrego un \n al final de la linea final y pongo el 0 final
             buffer[bytesRead + temp_length] = '\n';
             buffer[bytesRead + temp_length + 1] = '\0';
-            fn(buffer, tickets);
+            processBuffer(buffer, tickets);
         }
     }
 }
