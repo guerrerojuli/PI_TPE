@@ -90,46 +90,27 @@ void processBufferInfractions(char buffer[], ticketsADT tickets) {
     }
 }
 
-tTicket processTokenCHI(char *token) {
-  tTicket ticket;
-  char id_aux[MAX_LONG_INT];
-  char month_aux[MAX_LONG_INT];
-  char year_aux[MAX_LONG_INT];
-  char agency_aux[MAX_AGENCY + 1];
-  sscanf(token, "%[^-]-%[^-]-%*[^;];%[^;];%[^;];%[^;];%*[^\n]\n", year_aux, month_aux, ticket.plate, agency_aux, id_aux);
-  ticket.id = atoi(id_aux);
-  ticket.year = atoi(year_aux);
-  ticket.month = (char) atoi(month_aux);
-  ticket.agency = agency_aux;
-  return ticket;
-}
-
-tTicket processTokenNYC(char *token) {
-  tTicket ticket;
-  char id_aux[MAX_LONG_INT];
-  char month_aux[MAX_LONG_INT];
-  char year_aux[MAX_LONG_INT];
-  char agency_aux[MAX_AGENCY + 1];
-  sscanf(token, "%[^;];%[^-]-%[^-]-%*[^;];%[^;];%*[^;];%[^\n]\n", ticket.plate, year_aux, month_aux, id_aux, agency_aux);
-  ticket.id = atoi(id_aux);
-  ticket.year = atoi(year_aux);
-  ticket.month = (char) atoi(month_aux);
-  ticket.agency = agency_aux;
-  return ticket;
-}
-
 void processBufferTickets(char *buffer, ticketsADT tickets) {
-    char* token = strtok(buffer, "\n");
-    while ( token != NULL ) {
-      tTicket ticket = processToken(token);
-      errno = 0;
-      insertTicket(ticket, tickets);
-      if ( errno == ENOMEM ) {
-          fprintf(stderr, "Error al cargar datos del archivo de tickets por falta de memoria.\n");
-          exit(ERROR);
-      }
-      token = strtok(NULL, "\n");
+  tTicket ticket;
+  char id_aux[MAX_LONG_INT];
+  char month_aux[MAX_LONG_INT];
+  char year_aux[MAX_LONG_INT];
+  char agency_aux[MAX_AGENCY + 1];
+  char* token = strtok(buffer, "\n");
+  while ( token != NULL ) {
+    parseToken(token, id_aux, ticket.plate, month_aux, year_aux, agency_aux);
+    ticket.id = atoi(id_aux);
+    ticket.year = atoi(year_aux);
+    ticket.month = (char) atoi(month_aux);
+    ticket.agency = agency_aux;
+    errno = 0;
+    insertTicket(ticket, tickets);
+    if ( errno == ENOMEM ) {
+        fprintf(stderr, "Error al cargar datos del archivo de tickets por falta de memoria.\n");
+        exit(ERROR);
     }
+    token = strtok(NULL, "\n");
+  }
 }
 
 // Función optimizada, en vez de leer línea por línea, traigo de a chunks de memoria del archivo ya que es 

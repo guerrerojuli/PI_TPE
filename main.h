@@ -19,7 +19,7 @@
 #define MAX_LINE_QUERY1 61 //(50+1+10)
 #define MAX_LINE_QUERY2 75 //(13+1+50+1+10)
 #define MAX_LINE_QUERY3 72 //(50+1+10+1+10)
-#define processToken processTokenCHI
+#define parseToken(token, id, plate, month, year, agency) (sscanf((token), "%[^-]-%[^-]-%*[^;];%[^;];%[^;];%[^;];%*[^\n]\n", (year), (month), (plate), (agency), (id)))
 
 #elif NYC
 #define MAX_INFRACTION 30
@@ -27,7 +27,7 @@
 #define MAX_LINE_QUERY1 41 //(30+1+10)
 #define MAX_LINE_QUERY2 77 //(35+1+30+1+10)
 #define MAX_LINE_QUERY3 52 //(30+1+10+1+10)
-#define processToken processTokenNYC
+#define parseToken(token, id, plate, month, year, agency) (sscanf((token), "%[^;];%[^-]-%[^-]-%*[^;];%[^;];%*[^;];%[^\n]\n", (plate), (year), (month), (id), (agency)))
 
 #else
 #error "Debe compilar con -D$(CIUDAD)"
@@ -36,7 +36,7 @@
 #define MAX_LINE_QUERY1 0
 #define MAX_LINE_QUERY2 0
 #define MAX_LINE_QUERY3 0
-#define processToken processTokenCHI //hay que ver que poner aca
+#define parseToken(token, id, plate, month, year, agency)
 
 #endif
 
