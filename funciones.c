@@ -17,16 +17,6 @@ FILE *openFile(char* arg) {
     return res;
 }
 
-static int notOnlyNumbers(char *s) {
-    while ( *s != '\0' ) {
-        if ( !isdigit(*s) ) {
-            return 1;
-        }
-        s++;
-    }
-    return 0;
-}
-
 static int isNumber(char *s) {
   while (*s){
     if ( !isdigit(*s) ) {
@@ -51,70 +41,46 @@ static void getYearRange(int argc, char *argv[], int *beginYear, int *endYear) {
     *endYear = -1;
     return;
   }
-  if (*beginYear < START_YEAR) {
-    *beginYear = START_YEAR;
-  }
-  if (*beginYear > currentYear){
-    *endYear = *beginYear;
-    return;
-  }
   if (argc == 4) {
+    if (*beginYear < START_YEAR) {
+        *beginYear = START_YEAR;
+    }
+    if (*beginYear > currentYear){
+        *endYear = *beginYear;
+        return;
+    }
     *endYear = currentYear;
     return;
   }
   // argc = 5
-  if (!isNumber(argv[4]) || *beginYear > (*endYear = atoi(argv[4])) || endYear < 0){
+  if (!isNumber(argv[4]) || *beginYear > (*endYear = atoi(argv[4])) || *endYear < 0){
     *beginYear = -1;
     *endYear = -1;
     return;
   }
+    if (*beginYear < START_YEAR) {
+        *beginYear = START_YEAR;
+    }
+    if (*endYear < START_YEAR) {
+        *endYear = START_YEAR;
+    }
+    if (*beginYear > currentYear){
+        *endYear = *beginYear;
+        return;
+    }
   if (*endYear > currentYear) {
     *endYear = currentYear;
   }
 }
 
 ticketsADT createTicketADT(int argc, char *argv[], size_t max_description, size_t max_agency_name, size_t long_patente) {
-    time_t now;
-    struct tm *local;
-    time(&now);
-    local = localtime(&now);
-    int year = local->tm_year + 1900;
-    ticketsADT tickets;
     int beginYear, endYear;
-    if ( argc == 3 ) { // Si no me pasan el año de cierre, obtengo el actual con la librería time.h
-        tickets = newTickets(START_YEAR, year, max_description, max_agency_name, long_patente);
-    }
-    else if ( argc == 4 && (beginYear = atoi(argv[3])) >= 0 ) {
-        if ( notOnlyNumbers(argv[3]) ) {
-            fprintf(stderr, "Error en los años pasados como parametros\n");
+    getYearRange(argc, argv, &beginYear, &endYear);
+    if (beginYear == -1){
+        fprintf(stderr, "Error en los años pasados como parametros\n");
             exit(ERROR);
-        }
-        if ( beginYear > year ) {
-            beginYear = year + 1;
-            tickets = newTickets(beginYear, beginYear, max_description, max_agency_name, long_patente);
-        }
-        else {
-            tickets = newTickets(beginYear, year, max_description, max_agency_name, long_patente);
-        }
     }
-    else { // argc == 5
-        if ( notOnlyNumbers(argv[4]) || notOnlyNumbers(argv[3]) || (beginYear = atoi(argv[3])) > (endYear = atoi(argv[4])) || endYear < 0 || beginYear < 0 ) { 
-            // Chequea que ambos parametros sean solo numeros, y que beginYear sea menor o igual a endYear
-            fprintf(stderr, "Error en los años pasados como parametros\n");
-            exit(ERROR);
-        }
-        if ( beginYear > year ) {
-            beginYear = year + 1;
-            tickets = newTickets(beginYear, beginYear, max_description, max_agency_name, long_patente);
-        }
-        else {
-            if ( endYear > year ) {
-                endYear = year + 1;
-            }
-            tickets = newTickets(beginYear, endYear, max_description, max_agency_name, long_patente);
-        }       
-    }
-    return tickets;
+    return newTickets(beginYear, endYear, max_description, max_agency_name, long_patente);
 }
 
 void processBufferInfractions(char buffer[], ticketsADT tickets) {
