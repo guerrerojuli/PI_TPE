@@ -63,7 +63,7 @@ static void getYearRange(int argc, char *argv[], int *beginYear, int *endYear) {
     return;
   }
   // argc = 5
-  if (!isNumber(argv[4]) || *beginYear > (*endYear = atoi(argv[4])) || endYear < 0){
+  if (!isNumber(argv[4]) || *beginYear > (*endYear = atoi(argv[4])) || *endYear < 0){
     *beginYear = -1;
     *endYear = -1;
     return;

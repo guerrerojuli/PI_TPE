@@ -117,3 +117,4 @@ tYear * getTop3Month(ticketsADT tickets, size_t * amountYears);
 void freeTickets(ticketsADT tickets);
 
 #endif
+
