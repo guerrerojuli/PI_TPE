@@ -45,9 +45,15 @@ tPlateTree insertToPlateTree(tPlateTree plateTree, char *plate, size_t plateLeng
   // desbalanceó
   int balance = getBalance(plateTree);
 
+  
   if (balance > 1){
+    int cmpRight=my_strcasecmp(plateTree->left->plate, plate);
 
-    if ((my_strcasecmp(plateTree->left->plate, plate) < 0) && (plateTree->left->right != NULL)) {
+    if (cmpRight == 0){
+      return plateTree;
+    }
+
+    if (cmpRight < 0 && plateTree->left->right != NULL ) {
       plateTree->left = rotateLeft(plateTree->left);
     }
 
@@ -56,8 +62,13 @@ tPlateTree insertToPlateTree(tPlateTree plateTree, char *plate, size_t plateLeng
 
   
   if (balance < -1){
+    int cmpLeft=my_strcasecmp(plateTree->right->plate, plate);
 
-    if ((my_strcasecmp(plateTree->right->plate, plate) > 0) && plateTree->right->left != NULL){
+    if (cmpLeft == 0){
+      return plateTree;
+    }
+
+    if (cmpLeft > 0 && plateTree->right->left != NULL){
       plateTree->right = rotateRight(plateTree->right);
     }
 
