@@ -45,33 +45,24 @@ tPlateTree insertToPlateTree(tPlateTree plateTree, char *plate, size_t plateLeng
   // desbalanceó
   int balance = getBalance(plateTree);
 
-  // Si este nodo se desbalanceó, hay 4 casos
+  if (balance > 1){
 
-  // Caso Izquierda Izquierda
-  int cmpLeft;
-  if (balance > 1 && (cmpLeft = my_strcasecmp(plateTree->left->plate, plate) > 0)) {
-    return rotateRight(plateTree);
-  }
-
-  // Caso Izquierda Derecha
-  if (balance > 1 && cmpLeft < 0) {
-    if (plateTree->left->right != NULL) {
+    if ((my_strcasecmp(plateTree->left->plate, plate) < 0) && (plateTree->left->right != NULL)) {
       plateTree->left = rotateLeft(plateTree->left);
     }
+
     return rotateRight(plateTree);
   }
 
-  // Caso Derecha Derecha
-  int cmpRight;
-  if (balance < -1 && (cmpRight = my_strcasecmp(plateTree->right->plate, plate)) < 0)
-    return rotateLeft(plateTree);
+  
+  if (balance < -1){
 
-  // Caso Derecha Izquierda
-  if (balance < -1 && cmpRight > 0) {
-    if (plateTree->right->left != NULL) {
+    if ((my_strcasecmp(plateTree->right->plate, plate) > 0) && plateTree->right->left != NULL){
       plateTree->right = rotateRight(plateTree->right);
     }
+
     return rotateLeft(plateTree);
+
   }
 
   // Retornar el nodo (sin cambio)
