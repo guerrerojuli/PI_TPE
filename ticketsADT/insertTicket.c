@@ -5,12 +5,15 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
-static tAgencyList addTicketToAgency(tAgencyList agencyNode, char *agency, size_t id, size_t infractionsDim, size_t maxLongAgencyName);
+static tAgencyList addTicketToAgency(tAgencyList agencyNode, const char *agency, size_t id, size_t infractionsDim, size_t maxLongAgencyName);
 
 static void addTicketToYears(size_t (*years)[N_MONTH], size_t year, size_t month, size_t minYear, size_t maxYear);
 
-static void addTicketToInfraction(tInfractionNode *infractions, size_t id, char *plate, size_t plateLength);
+static void addTicketToInfraction(tInfractionNode *infractions, size_t id, const char *plate, size_t plateLength);
+
+static int getPlateIndex(const char* plate);
 
 void insertTicket(tTicket ticket, ticketsADT tickets) {
   if (ticket.id >= tickets->infractionsDim) {
@@ -36,7 +39,7 @@ void insertTicket(tTicket ticket, ticketsADT tickets) {
  * la agencia todavia no tenga ninguna infraccion agrega la agencia a la lista
  * modifica errno si falla
  * */
-static tAgencyList addTicketToAgency(tAgencyList agencyNode, char *agency, size_t id, size_t infractionsDim, size_t maxLongAgencyName) {
+static tAgencyList addTicketToAgency(tAgencyList agencyNode, const char *agency, size_t id, size_t infractionsDim, size_t maxLongAgencyName) {
   int cmp;
   if (agencyNode == NULL || (cmp = strcmp(agencyNode->name, agency)) > 0) {
 
@@ -89,8 +92,20 @@ static void addTicketToYears(size_t (*years)[N_MONTH], size_t year, size_t month
   years[year - minYear][month - 1]++;
 }
 
-static void addTicketToInfraction(tInfractionNode *infractions, size_t id, char *plate, size_t plateLength) {
+static void addTicketToInfraction(tInfractionNode *infractions, size_t id, const char *plate, size_t plateLength) {
   infractions[id].infractionAmount++;
+  int index = getPlateIndex(plate);
   errno = 0;
-  infractions[id].plateTree = insertToPlateTree(infractions[id].plateTree, plate, plateLength, &infractions[id].maxPlate, &infractions[id].plateAmount); 
+  infractions[id].plateTree[index] = insertToPlateTree(infractions[id].plateTree[index], plate, plateLength, &infractions[id].maxPlate, &infractions[id].maxPlateAmount); 
 }
+
+static int getPlateIndex(const char* plate) {
+  if (isalpha(*plate)) {
+    return toupper(*plate) - 'A';
+  }
+  if (isdigit(*plate)) {
+    return *plate - '0' + N_LETTER;
+  }
+  return N_LETTER + N_NUMS;
+}
+

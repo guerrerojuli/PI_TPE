@@ -3,7 +3,8 @@
 #include <errno.h>
 #include <stdlib.h>
 
-tPlateTree insertToPlateTree(tPlateTree plateTree, char *plate, size_t plateLength, char **maxPlate, size_t *maxPlateAmount) {
+
+tPlateTree insertToPlateTree(tPlateTree plateTree, const char *plate, size_t plateLength, char **maxPlate, size_t *maxPlateAmount) {
   if (plateTree == NULL) {
     errno = 0;
     tPlateNode *node = malloc(sizeof(*node));

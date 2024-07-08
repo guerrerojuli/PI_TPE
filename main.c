@@ -6,13 +6,19 @@
 #include "funciones.c"
 
 int main(int argc, char *argv[]) {
+    int beginYear, endYear;
     if ( argc < 3 || argc > 5 ) {
         fprintf(stderr, "Error: cantidad de parámetros inválida\n");
         return ERROR;
     }
 
+    getYearRange(argc, argv, &beginYear, &endYear);
+    if (beginYear == -1){
+        fprintf(stderr, "Error en los años pasados como parametros\n");
+        return ERROR;
+    }
     // Creo mi ADT, en el cual guardaré los datos
-    ticketsADT tickets = createTicketADT(argc, argv, MAX_INFRACTION, MAX_AGENCY, LONG_PATENTE);
+    ticketsADT tickets =  newTickets(beginYear, endYear, MAX_INFRACTION, MAX_AGENCY, PLATE_LENGTH);
 
 
     // Primera parte: Leo argv[2], el cual será el archivo csv donde guardo infracciones con su respectivo id

@@ -30,7 +30,7 @@ tInfractionPlateByAlpha nextPlateByAlpha(ticketsADT tickets) {
   tInfractionNode *current = tickets->currentByAlpha;
   infr.description = current->description;
   infr.plate = current->maxPlate;
-  infr.amount = current->plateAmount;
+  infr.amount = current->maxPlateAmount;
   tickets->currentByAlpha = current->nextByAlpha;
   return infr;
 }

@@ -58,29 +58,19 @@ static void getYearRange(int argc, char *argv[], int *beginYear, int *endYear) {
     *endYear = -1;
     return;
   }
-    if (*beginYear < START_YEAR) {
-        *beginYear = START_YEAR;
-    }
-    if (*endYear < START_YEAR) {
-        *endYear = START_YEAR;
-    }
-    if (*beginYear > currentYear){
-        *endYear = *beginYear;
-        return;
-    }
+  if (*beginYear < START_YEAR) {
+      *beginYear = START_YEAR;
+  }
+  if (*endYear < START_YEAR) {
+      *endYear = START_YEAR;
+  }
+  if (*beginYear > currentYear){
+      *endYear = *beginYear;
+      return;
+  }
   if (*endYear > currentYear) {
     *endYear = currentYear;
   }
-}
-
-ticketsADT createTicketADT(int argc, char *argv[], size_t max_description, size_t max_agency_name, size_t long_patente) {
-    int beginYear, endYear;
-    getYearRange(argc, argv, &beginYear, &endYear);
-    if (beginYear == -1){
-        fprintf(stderr, "Error en los años pasados como parametros\n");
-            exit(ERROR);
-    }
-    return newTickets(beginYear, endYear, max_description, max_agency_name, long_patente);
 }
 
 void processBufferInfractions(char buffer[], ticketsADT tickets) {

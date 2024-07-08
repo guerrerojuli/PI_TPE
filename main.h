@@ -10,7 +10,7 @@
 #define SUCCESS 0
 #define ERROR 1
 // El 0 final lo cuentan desde el backend
-#define LONG_PATENTE 10
+#define PLATE_LENGTH 10
 #define BUFFER_SIZE 16384 // 16 KB
 
 #ifdef CHI

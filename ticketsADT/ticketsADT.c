@@ -67,10 +67,12 @@ int insertInfraction(tInfraction infraction, ticketsADT tickets) {
   }
   ticket->infractionAmount = 0;
   ticket->maxPlate = NULL;
-  ticket->plateAmount = 0;
+  ticket->maxPlateAmount = 0;
   ticket->nextByAlpha = NULL;
   ticket->nextByAmount = NULL;
-  ticket->plateTree = NULL;
+  for (int i = 0; i < TREE_VEC_DIM; i++) {
+    ticket->plateTree[i] = NULL;
+  }
   return 1;
 }
 
@@ -143,7 +145,7 @@ void freeTickets(ticketsADT tickets){
   free(tickets);
 }
 
-static void freeAgencies(tAgencyList agencies){
+static void freeAgencies(tAgencyList agencies) {
   if (agencies == NULL){
     return;
   }
@@ -155,12 +157,14 @@ static void freeAgencies(tAgencyList agencies){
   free(agencies);
 }
 
-static void freeInfraction(tInfractionNode * infrNode){
+static void freeInfraction(tInfractionNode * infrNode) {
   if (infrNode->description == NULL){
     return; 
   }
 
   free(infrNode->description);
-  freeTree(infrNode->plateTree);
+  for (int i = 0; i < TREE_VEC_DIM; i++) {
+    freeTree(infrNode->plateTree[i]);
+  }
 }
 

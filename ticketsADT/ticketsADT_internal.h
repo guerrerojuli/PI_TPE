@@ -6,6 +6,7 @@
 #define N_MONTH 12
 #define N_LETTER 'Z' - 'A' + 1
 #define N_NUMS '9' - '0' + 1
+#define TREE_VEC_DIM N_LETTER + N_NUMS + 1 //para caracteres no alphanum
 
 typedef struct plateNode {
   char *plate;
@@ -20,9 +21,9 @@ typedef struct plateNode *tPlateTree;
 typedef struct infractionNode {
   char *description;
   size_t infractionAmount;
-  tPlateTree plateTree;
+  tPlateTree plateTree[TREE_VEC_DIM];
   char *maxPlate;
-  size_t plateAmount;
+  size_t maxPlateAmount;
   struct infractionNode *nextByAmount;
   struct infractionNode *nextByAlpha;
 } tInfractionNode;
