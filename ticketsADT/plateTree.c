@@ -66,7 +66,7 @@ tPlateTree insertToPlateTree(tPlateTree plateTree, const char *plate, size_t pla
     plateTree->right = insertToPlateTree(plateTree->right, plate, plateLength, maxPlate, maxPlateAmount);
   } else {
     plateTree->infractionAmount++;
-    if (*maxPlateAmount < plateTree->infractionAmount) {
+    if (*maxPlateAmount < plateTree->infractionAmount || (*maxPlateAmount == plateTree->infractionAmount && my_strcasecmp(*maxPlate, plateTree->plate) > 0)) {
       *maxPlateAmount = plateTree->infractionAmount;
       *maxPlate = plateTree->plate;
     }
