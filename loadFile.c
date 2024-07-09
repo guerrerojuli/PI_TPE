@@ -5,11 +5,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Función optimizada, en vez de leer línea por línea, traigo de a chunks de
-// memoria del archivo ya que es muy costoso la lectura de archivos desde el
-// disco duro. Proceso el bloque en una funcion auxiliar. La funcion es analoga
-// para infracciones y tickets, por eso le pasamos un puntero a funcion
-void loadWithBlocks(ticketsADT tickets, FILE *file_infr, void (*processBuffer)(char *, ticketsADT)) {
+/*
+** Función optimizada, en vez de leer línea por línea, traigo de a chunks de
+** memoria del archivo ya que es muy costoso la lectura de archivos desde el
+** disco duro. Proceso el bloque en una funcion auxiliar. La funcion es analoga
+** para infracciones y tickets, por eso le pasamos un puntero a funcion
+** Retorna 1 si funcionó correctamente, 0 sino.
+*/
+int loadWithBlocks(ticketsADT tickets, FILE *file_infr, void (*processBuffer)(char *, ticketsADT)) {
+  if (fgetc(file_infr) == EOF) {
+    return 0;
+  }
   fscanf(file_infr, "%*[^\n]\n"); // Sacamos los nombre de los campos de la primer línea
   size_t bytesRead; // Cantidad de bytes leidos por fread, si es menor al pedido significa que llegue al final del archivo
   char buffer[BUFFER_SIZE + 1]; // Iré guardando el boque traido del archivo acá
@@ -24,7 +30,7 @@ void loadWithBlocks(ticketsADT tickets, FILE *file_infr, void (*processBuffer)(c
       errno = 0;
       processBuffer(buffer, tickets);
       if (errno == ENOMEM) {
-        return;
+        return 0;
       }
       buffer_pointer = buffer + buffer_length + 1;
       strcpy(buffer, buffer_pointer);
@@ -36,17 +42,18 @@ void loadWithBlocks(ticketsADT tickets, FILE *file_infr, void (*processBuffer)(c
       errno = 0;
       processBuffer(buffer, tickets);
       if (errno == ENOMEM) {
-        return;
+        return 0;
       }
     }
   }
+  return 1;
 }
 
 void processBufferInfractions(char buffer[], ticketsADT tickets) {
   tInfraction infr_aux; // Estructura donde iré guardando los datos de cada infracción
   char descAux[51];
   char id_aux[MAX_LONG_INT];
-  char *token = strtok(buffer, "\n");
+  char *token = strtok(buffer, LINE_DELIM);
   while (token != NULL) {
     sscanf(token, "%[^;];%[^\n]\n", id_aux, descAux);
     infr_aux.id = atoi(id_aux);
@@ -56,7 +63,7 @@ void processBufferInfractions(char buffer[], ticketsADT tickets) {
     if (errno == ENOMEM) {
       return;
     }
-    token = strtok(NULL, "\n");
+    token = strtok(NULL, LINE_DELIM);
   }
 }
 
@@ -66,7 +73,7 @@ void processBufferTickets(char *buffer, ticketsADT tickets) {
   char month_aux[MAX_LONG_INT];
   char year_aux[MAX_LONG_INT];
   char agency_aux[MAX_AGENCY + 1];
-  char *token = strtok(buffer, "\n");
+  char *token = strtok(buffer, LINE_DELIM);
   while (token != NULL) {
     parseToken(token, id_aux, ticket.plate, month_aux, year_aux, agency_aux);
     ticket.id = atoi(id_aux);
@@ -78,6 +85,6 @@ void processBufferTickets(char *buffer, ticketsADT tickets) {
     if (errno == ENOMEM) {
       exit(ERROR);
     }
-    token = strtok(NULL, "\n");
+    token = strtok(NULL, LINE_DELIM);
   }
 }

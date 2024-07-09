@@ -22,6 +22,7 @@ static int isNumber(char *s);
 static void getYearRange(int argc, char *argv[], int *beginYear, int *endYear);
 
 int main(int argc, char *argv[]) {
+  int res = 0;
   errno = 0;
   int beginYear, endYear;
   if (argc < 3 || argc > 5) {
@@ -48,7 +49,12 @@ int main(int argc, char *argv[]) {
     openFileError(argv[2]);
     return ERROR;
   }
-  loadWithBlocks(tickets, fileInfr, processBufferInfractions);
+  res = loadWithBlocks(tickets, fileInfr, processBufferInfractions);
+  if (!res) {
+    fprintf(stderr, "Error el archivo de infracciones se encuentra vacío.\n");
+    freeTickets(tickets);
+    return ERROR;
+  }
   if (errno == ENOMEM) {
     fprintf(stderr, "Error al cargar datos del archivo de infracciones por falta de memoria.\n");
     freeTickets(tickets);
@@ -64,7 +70,12 @@ int main(int argc, char *argv[]) {
     return ERROR;
   }
   errno = 0;
-  loadWithBlocks(tickets, fileTickets, processBufferTickets);
+  res = loadWithBlocks(tickets, fileTickets, processBufferTickets);
+  if (!res) {
+    fprintf(stderr, "Error el archivo de tickets se encuentra vacío.\n");
+    freeTickets(tickets);
+    return ERROR;
+  }
   if (errno == ENOMEM) {
       fprintf(stderr, "Error al cargar datos del archivo de tickets por falta de memoria.\n");
       freeTickets(tickets);
@@ -72,7 +83,6 @@ int main(int argc, char *argv[]) {
   }
   fclose(fileTickets);
 
-  int res = 0;
   res = query1(tickets);
   if (!res) {
     createFileError("./query1.csv");

@@ -4,14 +4,17 @@
 #include "ticketsADT/ticketsADT.h"
 #include <stdio.h>
 
+#define LINE_DELIM "\n"
+
 /*
 ** Lee un archivo en bloques de tamaño definido y procesa cada bloque.
+** Retorna 1 si leyó correctamente, 0 sino.
 ** 
 ** tickets - El ADT de tickets.
 ** file_infr - El archivo de entrada que contiene los datos a leer.
 ** processBuffer - Un puntero a una función que procesa el buffer leído.
 */
-void loadWithBlocks(ticketsADT tickets, FILE *file_infr, void (*processBuffer)(char *, ticketsADT));
+int loadWithBlocks(ticketsADT tickets, FILE *file_infr, void (*processBuffer)(char *, ticketsADT));
 
 /*
 ** Procesa el buffer de datos para infracciones y los inserta en el ADT de tickets.
