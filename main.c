@@ -22,6 +22,7 @@ static int isNumber(char *s);
 static void getYearRange(int argc, char *argv[], int *beginYear, int *endYear);
 
 int main(int argc, char *argv[]) {
+  errno = 0;
   int beginYear, endYear;
   if (argc < 3 || argc > 5) {
     fprintf(stderr, "Error: cantidad de parámetros inválida\n");
@@ -35,6 +36,10 @@ int main(int argc, char *argv[]) {
   }
   // Creo mi ADT, en el cual guardaré los datos
   ticketsADT tickets = newTickets(beginYear, endYear, MAX_INFRACTION, MAX_AGENCY, PLATE_LENGTH);
+  if ( tickets == NULL ) {
+    fprintf(stderr, "Error por falta de memoria\n");
+    return ERROR;
+  }
 
   // Primera parte: Leo argv[2], el cual será el archivo csv donde guardo
   // infracciones con su respectivo id Formarto: id;descripcion
@@ -46,6 +51,7 @@ int main(int argc, char *argv[]) {
   loadWithBlocks(tickets, fileInfr, processBufferInfractions);
   if (errno == ENOMEM) {
     fprintf(stderr, "Error al cargar datos del archivo de infracciones por falta de memoria.\n");
+    freeTickets(tickets);
     return ERROR;
   }
   fclose(fileInfr);
@@ -61,6 +67,7 @@ int main(int argc, char *argv[]) {
   loadWithBlocks(tickets, fileTickets, processBufferTickets);
   if (errno == ENOMEM) {
       fprintf(stderr, "Error al cargar datos del archivo de tickets por falta de memoria.\n");
+      freeTickets(tickets);
       return ERROR;
   }
   fclose(fileTickets);
@@ -69,23 +76,27 @@ int main(int argc, char *argv[]) {
   res = query1(tickets);
   if (!res) {
     createFileError("./query1.csv");
+    freeTickets(tickets);
     return ERROR;
   }
   res = query2(tickets);
   if (!res) {
     createFileError("./query2.csv");
+    freeTickets(tickets);
     return ERROR;
   }
   res = query3(tickets);
   if (!res) {
     createFileError("./query3.csv");
+    freeTickets(tickets);
     return ERROR;
   }
   res = query4(tickets);
   if (!res) {
     createFileError("./query4.csv");
+    freeTickets(tickets);
     return ERROR;
-  }
+  } 
 
   freeTickets(tickets);
   return 0;
