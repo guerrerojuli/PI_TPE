@@ -6,7 +6,7 @@
 /*
 ** Inserta una nueva matrícula en el árbol manteniendo le balanceo.
 ** 
-** plateTree - El árbol AVL donde se insertará la matrícula.
+** plateTree - El árbol donde se insertará la matrícula.
 ** plate - La matrícula a insertar.
 ** plateLength - La longitud del string de la matrícula.
 ** maxPlate - Un puntero al string de la matrícula con la mayor cantidad de infracciones.

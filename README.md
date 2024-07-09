@@ -6,7 +6,7 @@ Repositorio con todos los archivos utilizados para el procesamiento de los archi
 
 ## Orden de los archivos
 
-En la carpeta [ticketsADT](https://github.com/aguegea/TP_01/tree/main/ticketsADT) se encuentra toda la lógica utilizada en el manejo de los datos extraídos por el front de los archivos de entreada csv.
+En la carpeta [ticketsADT](https://github.com/aguegea/TP_01/tree/main/ticketsADT) se encuentra toda la lógica utilizada en el manejo de los datos extraídos por el front de los archivos de entrada csv.
 
 El archivo [loadFile.c](https://github.com/aguegea/TP_01/blob/main/loadFile.c) contiene las funciones utilizadas para leer de a bloques de los archivos recibidos, las culaes están explicadas en [loadFile.h](https://github.com/aguegea/TP_01/blob/main/loadFile.h).
 
