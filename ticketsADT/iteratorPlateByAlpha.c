@@ -2,8 +2,9 @@
 #include "ticketsADT_internal.h"
 #include <string.h>
 
-static tInfractionNode *orderTicketsByAlphaRec(tInfractionNode *infrNode, tInfractionNode *infraction);
+/* Ordena el vector de infracciones alfabeticamente creando una lista */
 static void orderTicketsByAlpha (ticketsADT tickets);
+static tInfractionNode *orderTicketsByAlphaRec(tInfractionNode *infrNode, tInfractionNode *infraction);
 
 void toBeginPlateByAlpha(ticketsADT tickets) {
   if (tickets->firstByAlpha == NULL) {

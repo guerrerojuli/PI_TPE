@@ -12,9 +12,15 @@
 #include "agencyIterator.c"
 #include "iteratorPlateByAlpha.c"
 
+/* Para un anio coloca los valores de los tres meses con mayor cantidad de multas */
 static void getMonths(size_t * year , char* firstMonth, char* secondMonth, char* thirdMonth);
+
+/* Libera todos los recursos utilizados por la lista de agencias */
 static void freeAgencies(tAgencyList agencies);
+
+/* Libera todos los recursos utilizados por el arreglo de infracciones */
 static void freeInfraction(tInfractionNode * infrNode);
+
 
 ticketsADT newTickets(size_t beginYear, size_t endYear, size_t descLength, size_t agencyLength, size_t plateLength) {
   errno = 0;
@@ -76,31 +82,6 @@ int insertInfraction(tInfraction infraction, ticketsADT tickets) {
   return 1;
 }
 
-static void getMonths(size_t * year , char* firstMonth, char* secondMonth, char* thirdMonth){
-  size_t firstAmount = 0, secondAmount = 0, thirdAmount = 0;
-  *firstMonth = *secondMonth = *thirdMonth = 0;
-  for (int i=0 ; i < N_MONTH ; i++){
-    if (year[i] > firstAmount){
-      thirdAmount = secondAmount;
-      *thirdMonth = *secondMonth;
-      secondAmount = firstAmount;
-      *secondMonth = *firstMonth;
-      firstAmount = year[i];
-      *firstMonth = i + 1;
-    }
-    else if (year[i] > secondAmount){
-      thirdAmount = secondAmount;
-      *thirdMonth = *secondMonth;
-      secondAmount = year[i];
-      *secondMonth = i + 1;
-    }
-    else if (year[i] > thirdAmount){
-      thirdAmount = year[i];
-      *thirdMonth= i + 1;
-    }
-  }
-}
-
 tYear * getTop3Month(ticketsADT tickets, size_t * amountYears){
   int j = 0, yearsRange = tickets->endYear - tickets->beginYear + 1;
 
@@ -126,6 +107,31 @@ tYear * getTop3Month(ticketsADT tickets, size_t * amountYears){
   *amountYears = j;
 
   return arr;
+}
+
+static void getMonths(size_t * year , char* firstMonth, char* secondMonth, char* thirdMonth){
+  size_t firstAmount = 0, secondAmount = 0, thirdAmount = 0;
+  *firstMonth = *secondMonth = *thirdMonth = 0;
+  for (int i=0 ; i < N_MONTH ; i++){
+    if (year[i] > firstAmount){
+      thirdAmount = secondAmount;
+      *thirdMonth = *secondMonth;
+      secondAmount = firstAmount;
+      *secondMonth = *firstMonth;
+      firstAmount = year[i];
+      *firstMonth = i + 1;
+    }
+    else if (year[i] > secondAmount){
+      thirdAmount = secondAmount;
+      *thirdMonth = *secondMonth;
+      secondAmount = year[i];
+      *secondMonth = i + 1;
+    }
+    else if (year[i] > thirdAmount){
+      thirdAmount = year[i];
+      *thirdMonth= i + 1;
+    }
+  }
 }
 
 void freeTickets(ticketsADT tickets){

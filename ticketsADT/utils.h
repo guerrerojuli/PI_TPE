@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 
+/* Retorna el maximo entre dos números */
 #define MAX(a, b) (((a) < (b)) ? (b) : (a))
 
 /* Retorna una copia de un string

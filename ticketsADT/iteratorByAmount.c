@@ -1,8 +1,9 @@
 #include "ticketsADT.h"
 #include "ticketsADT_internal.h"
 
-static tInfractionNode *orderTicketsByAmountRec(tInfractionNode *infrNode, tInfractionNode *infraction);
+/* Ordena el vector de infracciones creando una lista */
 static void orderTicketsByAmount(ticketsADT tickets);
+static tInfractionNode *orderTicketsByAmountRec(tInfractionNode *infrNode, tInfractionNode *infraction);
 
 void toBeginByAmount(ticketsADT tickets) {
   if (tickets->firstByAmount == NULL) {

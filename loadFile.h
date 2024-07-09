@@ -5,8 +5,7 @@
 #include <stdio.h>
 
 /*
-** Lee un archivo en bloques y procesa cada bloque.
-** Esta función es más eficiente que leer línea por línea, ya que reduce el número de operaciones de E/S.
+** Lee un archivo en bloques de tamaño definido y procesa cada bloque.
 ** 
 ** tickets - El ADT de tickets.
 ** file_infr - El archivo de entrada que contiene los datos a leer.

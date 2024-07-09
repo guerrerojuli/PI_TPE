@@ -9,7 +9,16 @@
 #include <time.h>
 
 
+/*
+** Comprueba que todos los caracteres del string #s sean digitos.
+** Retorna 1 si lo son, 0 si no lo son.
+*/
 static int isNumber(char *s);
+
+/*
+** Define #beginYear y #endYear segun los argumentos recibidos.
+** Define #beginYear = -1 si los parametros son inválidos.
+*/
 static void getYearRange(int argc, char *argv[], int *beginYear, int *endYear);
 
 int main(int argc, char *argv[]) {

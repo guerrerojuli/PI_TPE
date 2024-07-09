@@ -40,72 +40,85 @@ typedef struct year {
   char top[3];
 } tYear;
 
-/* Crea una nueva estructura donde se van a guardar los tickets.
+/* 
+** Crea una nueva estructura donde se van a guardar los tickets.
 ** Inicialmente esta vacia (no hay tickets).
 ** Si no se pudo crear retorna NULL.
 */
 ticketsADT newTickets(size_t beginYear, size_t endYear,size_t descLength, size_t agencyLength, size_t longPlate);
 
-/* Vincula el id con la descripcion de la infraccion. 
+/* 
+** Vincula el id con la descripcion de la infraccion. 
 ** Retorna 0 si el id ya estaba vinculado a una descripcion (no lo inserta).
 ** Setea errno si falla la asignacion de memoria y retorna -1.
 ** Retorna 1 si lo puedo vincular (lo inserta).
 */
 int insertInfraction(tInfraction infraction, ticketsADT tickets);
 
-/* Inserta un ticket
+/* 
+** Inserta un ticket
 ** Setea errno si falla
 */
 void insertTicket(tTicket ticket, ticketsADT tickets);
 
-/* Ordena la lista de infracciones en orden descendiente por cantidad de multas
-** Setea current en first que se va a usar para iterar en la lista
+/* 
+** Inicializa un iterador de infracciones en orden descendente por cantidad
+** a la primera (la de mayor cantidad de multas).
 */
 void toBeginByAmount(ticketsADT tickets);
 
-/* Verifica si hay más infracciones en la lista ordenada por cantidad.
+/* 
+** Verifica si hay más infracciones por las que iterar.
 ** Retorna 1 si hay más infracciones, 0 en caso contrario.
 */
 int hasNextByAmount(ticketsADT tickets);
 
-/* Retorna la siguiente infracción en la lista ordenada por cantidad.
+/* 
+** Retorna la siguiente infracción del iterador
 ** La estructura retornada incluye la descripción y la cantidad de multas.
 */
 tInfractionByAmount nextByAmount(ticketsADT tickets);
 
-/* Inicializa el iterador para recorrer las agencias.
-** Setea currentAgency en la primera agencia de la lista.
+/* 
+** Inicializa el iterador para recorrer las agencias en orden alfabético
+** en la primera.
 */
 void toBeginAgency(ticketsADT tickets);
 
-/* Verifica si hay más agencias en la lista.
+/* 
+** Verifica si hay más agencias por las que iterar.
 ** Retorna 1 si hay más agencias, 0 en caso contrario.
 */
 int hasNextAgency(ticketsADT tickets);
 
-/* Retorna la siguiente agencia en la lista.
+/* 
+** Retorna la siguiente agencia en el iterador.
 ** La estructura retornada incluye el nombre de la agencia, 
 ** la descripción de la infracción más común y la cantidad de dicha infracción.
 */
 tAgency nextAgency(ticketsADT tickets);
 
-/* Inicializa el iterador para recorrer las infracciones por orden alfabético.
-** Setea currentByAlpha en la primera infracción de la lista.
+/* 
+** Inicializa el iterador para recorrer las infracciones por orden alfabético
+** en la primera.
 */
 void toBeginPlateByAlpha(ticketsADT tickets);
 
-/* Verifica si hay más infracciones en la lista ordenada alfabéticamente.
+/* 
+** Verifica si hay más infracciones en el iterador.
 ** Retorna 1 si hay más infracciones, 0 en caso contrario.
 */
 int hasNextPlateByAlpha(ticketsADT tickets);
 
-/* Retorna la siguiente infracción en la lista ordenada alfabéticamente.
+/* 
+** Retorna la siguiente infracción en el iterador.
 ** La estructura retornada incluye la descripción de la infracción, 
 ** la placa del vehículo y la cantidad de dicha infracción.
 */
 tInfractionPlateByAlpha nextPlateByAlpha(ticketsADT tickets);
 
-/* Devuelve un arreglo (de tYear) en orden creciente (por anio) que en cada posicion tiene el anio 
+/* 
+** Devuelve un arreglo (de tYear) en orden creciente (por anio) que en cada posicion tiene el anio 
 ** con los tres meses con más multas (si menos de tres meses tienen multas devuelve 
 ** en lugar de un número de un mes el número cero).
 ** amountYears es un parámetro de entrada/salida donde se va a guardar la cantidad 

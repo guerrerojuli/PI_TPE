@@ -7,12 +7,27 @@
 #include <string.h>
 #include <ctype.h>
 
+/* 
+** Funcion auxiliar para a una agencia agregarle una infraccion, en caso de que
+** la agencia todavia no tenga ninguna infraccion agrega la agencia a la lista
+** modifica errno si falla
+*/
 static tAgencyList addTicketToAgency(tAgencyList agencyNode, const char *agency, size_t id, size_t infractionsDim, size_t maxLongAgencyName);
 
+/* 
+** Funcion auxiliar para a un anio y un mes agregarle una infraccion
+** si el anio no esta entre el rango de anios solicitado no se agrega
+*/
 static void addTicketToYears(size_t (*years)[N_MONTH], size_t year, size_t month, size_t minYear, size_t maxYear);
 
+/*
+** Se aumenta la cantidad de tickets de esa infracción y se suma la patente
+*/
 static void addTicketToInfraction(tInfractionNode *infractions, size_t id, const char *plate, size_t plateLength);
 
+/*
+** Retorna el valor del indice que le corresponde a la patente en el vector
+*/
 static int getPlateIndex(const char* plate);
 
 void insertTicket(tTicket ticket, ticketsADT tickets) {
@@ -35,10 +50,6 @@ void insertTicket(tTicket ticket, ticketsADT tickets) {
   // }
 }
 
-/* Funcion auxiliar para a una agencia agregarle una infraccion, en caso de que
- * la agencia todavia no tenga ninguna infraccion agrega la agencia a la lista
- * modifica errno si falla
- * */
 static tAgencyList addTicketToAgency(tAgencyList agencyNode, const char *agency, size_t id, size_t infractionsDim, size_t maxLongAgencyName) {
   int cmp;
   if (agencyNode == NULL || (cmp = strcmp(agencyNode->name, agency)) > 0) {
@@ -82,9 +93,6 @@ static tAgencyList addTicketToAgency(tAgencyList agencyNode, const char *agency,
   return agencyNode;
 }
 
-/* Funcion auxiliar para a un anio y un mes agregarle una infraccion
- * si el anio no esta entre el rango de anios solicitado no se agrega
- */
 static void addTicketToYears(size_t (*years)[N_MONTH], size_t year, size_t month, size_t minYear, size_t maxYear) {
   if (year < minYear || year > maxYear) {
     return;
