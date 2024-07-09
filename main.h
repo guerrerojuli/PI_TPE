@@ -1,6 +1,8 @@
 #ifndef __main__h
 #define __main__h
 
+#define openFileError(fileName) fprintf(stderr, "Error al abrir archivo: %s\n", fileName)
+#define createFileError(fileName) fprintf(stderr, "Error al crear el archivo: %s\nPuede provenir por falta de memoria.\n", fileName)
 #define LINEAS 50 // manejo #años #agencias #infracciones. Copio de a 50 lineas al archivo.
 #define MAX_MONTHS 13      // 12 meses + 1 empty
 #define MAX_LONG_INT 11 // Maxima cantidad de caracteres de un int y el cero final
@@ -30,7 +32,7 @@
 #define parseToken(token, id, plate, month, year, agency) (sscanf((token), "%[^;];%[^-]-%[^-]-%*[^;];%[^;];%*[^;];%[^\n]\n", (plate), (year), (month), (id), (agency)))
 
 #else
-#error "Debe compilar con -D$(CIUDAD)"
+#error "Debe compilar con una ciudad válida"
 #define MAX_INFRACTION 0
 #define MAX_AGENCY 0
 #define MAX_LINE_QUERY1 0

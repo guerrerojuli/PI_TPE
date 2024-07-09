@@ -108,4 +108,3 @@ static int getPlateIndex(const char* plate) {
   }
   return N_LETTER + N_NUMS;
 }
-

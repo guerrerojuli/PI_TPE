@@ -3,17 +3,11 @@
 #include "ticketsADT/ticketsADT.h"
 #include "main.h"
 
-static FILE *createQueryFile(char* name) {
-    FILE *res = fopen(name, "w");
-    if ( res == NULL ) {
-        fprintf(stderr, "Error al crear el archivo: %s\nPuede provenir por falta de memoria.\n", name);
-        exit(1);
+int query1(ticketsADT tickets) {
+    FILE *query1 = fopen("./query1.csv", "w");
+    if (query1 == NULL) {
+      return 0;
     }
-    return res;
-}
-
-void query1(ticketsADT tickets) {
-    FILE *query1 = createQueryFile("./query1.csv");
     fprintf(query1, "infraction;tickets\n"); // Primera linea
     toBeginByAmount(tickets);
     tInfractionByAmount aux;
@@ -38,11 +32,14 @@ void query1(ticketsADT tickets) {
     }
 
     fclose(query1);
+    return 1;
 }
 
-
-void query2(ticketsADT tickets) {
-    FILE *query2 = createQueryFile("./query2.csv");
+int query2(ticketsADT tickets) {
+    FILE *query2 = fopen("./query2.csv", "w");
+    if (query2 == NULL) {
+      return 0;
+    }
     fprintf(query2, "issuingAgency;infraction;tickets\n");
     toBeginAgency(tickets);
     tAgency aux;
@@ -64,10 +61,14 @@ void query2(ticketsADT tickets) {
         fwrite(buffer, 1, countBytes, query2);
     }
     fclose(query2);
+    return 1;
 }
 
-void query3(ticketsADT tickets) {
-    FILE *query3 = createQueryFile("./query3.csv");
+int query3(ticketsADT tickets) {
+    FILE *query3 = fopen("./query3.csv", "w");
+    if (query3 == NULL) {
+      return 0;
+    }
     fprintf(query3, "infraction;plate;tickets\n");
     toBeginPlateByAlpha(tickets);
     tInfractionPlateByAlpha aux;
@@ -91,10 +92,14 @@ void query3(ticketsADT tickets) {
         fwrite(buffer, 1, countBytes, query3);
     }
     fclose(query3);
+    return 1;
 }
 
-void query4(ticketsADT tickets) {
-    FILE *query4 = createQueryFile("./query4.csv");
+int query4(ticketsADT tickets) {
+    FILE *query4 = fopen("./query4.csv", "w");
+    if (query4 == NULL) {
+      return 0;
+    }
     fprintf(query4, "year;ticketsTop1Month;ticketsTop2Month;ticketsTop3Month\n");
     size_t dim;
     tYear *resp = getTop3Month(tickets, &dim);
@@ -117,4 +122,5 @@ void query4(ticketsADT tickets) {
     }
     fclose(query4);
     free(resp);
+    return 1;
 }
