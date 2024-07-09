@@ -12,7 +12,7 @@
 ** la agencia todavia no tenga ninguna infraccion agrega la agencia a la lista
 ** modifica errno si falla
 */
-static tAgencyList addTicketToAgency(tAgencyList agencyNode, const char *agency, size_t id, size_t infractionsDim, size_t maxLongAgencyName);
+static tAgencyList addTicketToAgency(tAgencyList agencyNode, const char *agency, const tInfractionNode* infractions, size_t id, size_t infractionsDim, size_t maxLongAgencyName);
 
 /* 
 ** Funcion auxiliar para a un anio y un mes agregarle una infraccion
@@ -36,7 +36,7 @@ void insertTicket(tTicket ticket, ticketsADT tickets) {
   }
 
   errno = 0;
-  tickets->agencies = addTicketToAgency(tickets->agencies, ticket.agency, ticket.id, tickets->infractionsDim, tickets->agencyLength);
+  tickets->agencies = addTicketToAgency(tickets->agencies, ticket.agency,tickets->infractions, ticket.id, tickets->infractionsDim, tickets->agencyLength);
   if (errno == ENOMEM) {
     return;
   }
@@ -50,7 +50,7 @@ void insertTicket(tTicket ticket, ticketsADT tickets) {
   // }
 }
 
-static tAgencyList addTicketToAgency(tAgencyList agencyNode, const char *agency, size_t id, size_t infractionsDim, size_t maxLongAgencyName) {
+static tAgencyList addTicketToAgency(tAgencyList agencyNode, const char *agency, const tInfractionNode* infractions, size_t id, size_t infractionsDim, size_t maxLongAgencyName) {
   int cmp;
   if (agencyNode == NULL || (cmp = my_strcasecmp(agencyNode->name, agency)) > 0) {
 
@@ -79,13 +79,13 @@ static tAgencyList addTicketToAgency(tAgencyList agencyNode, const char *agency,
     return newAgency;
 
   } else if (cmp < 0) {
-    agencyNode->nextAgency = addTicketToAgency( agencyNode->nextAgency, agency, id, infractionsDim, maxLongAgencyName);
+    agencyNode->nextAgency = addTicketToAgency(agencyNode->nextAgency, agency, infractions, id, infractionsDim, maxLongAgencyName);
 
   } else {
     agencyNode->inf[id]++;
 
     /*Me fijo si ahora la infraccion que agregue es la que mayor multas tiene*/
-    if (agencyNode->inf[id] > agencyNode->inf[agencyNode->maxId]) {
+    if (agencyNode->inf[id] > agencyNode->inf[agencyNode->maxId] || (agencyNode->inf[id] == agencyNode->inf[agencyNode->maxId] && my_strcasecmp(infractions[agencyNode->maxId].description, infractions[id].description) > 0)) {
       agencyNode->maxId = id;
     }
   }
