@@ -4,3 +4,4 @@
 *.csv
 test*
 *.o
+datasets/

@@ -1,5 +1,6 @@
 #include "ticketsADT.h"
 #include "ticketsADT_internal.h"
+#include "utils.h"
 #include <string.h>
 
 /* Ordena el vector de infracciones alfabeticamente creando una lista */
@@ -41,7 +42,7 @@ static tInfractionNode *orderTicketsByAlphaRec(tInfractionNode *infrNode, tInfra
     return infraction;
   }
 
-  if (strcmp(infrNode->description, infraction->description) > 0) {
+  if (my_strcasecmp(infrNode->description, infraction->description) > 0) {
     infraction->nextByAlpha = infrNode;
     return infraction;
   }

@@ -52,7 +52,7 @@ void insertTicket(tTicket ticket, ticketsADT tickets) {
 
 static tAgencyList addTicketToAgency(tAgencyList agencyNode, const char *agency, size_t id, size_t infractionsDim, size_t maxLongAgencyName) {
   int cmp;
-  if (agencyNode == NULL || (cmp = strcmp(agencyNode->name, agency)) > 0) {
+  if (agencyNode == NULL || (cmp = my_strcasecmp(agencyNode->name, agency)) > 0) {
 
     errno = 0;
     tAgencyList newAgency = malloc(sizeof(*newAgency));
