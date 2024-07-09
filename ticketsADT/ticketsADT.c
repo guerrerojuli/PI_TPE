@@ -47,8 +47,11 @@ ticketsADT newTickets(size_t beginYear, size_t endYear, size_t descLength, size_
 int insertInfraction(tInfraction infraction, ticketsADT tickets) {
   if (tickets->infractionsDim <= infraction.id) {
     errno = 0;
+    tInfractionNode * aux=tickets->infractions;
     tickets->infractions = realloc(tickets->infractions, (infraction.id + 1) * sizeof(tickets->infractions[0]));
     if (tickets->infractions == NULL || errno == ENOMEM) {
+      tickets->infractions=aux;
+      errno=ENOMEM;
       return -1;
     }
 
@@ -99,8 +102,10 @@ tYear * getTop3Month(ticketsADT tickets, size_t * amountYears){
 
   }
 
+  tYear * aux=arr;
   arr=realloc(arr, j * sizeof(*arr));
   if (arr == NULL || errno ==  ENOMEM){
+    arr=aux;
     *amountYears=0;
     return NULL;
   }
